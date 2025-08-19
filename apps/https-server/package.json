@@ -1,0 +1,19 @@
+{
+  "name": "https-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start":" .dist/index.js",
+    "build":"tsc -b ",
+    "dev":"pnpm run start && pnpm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^5.0.3",
+    "express": "^5.1.0",
+    "@repo/typescript-config":"workspace:*"
+  }
+}
