@@ -1,20 +1,35 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
-import z from "zod";
-const jwtKey = process.env.JWT_KEY || "";
-
+import { JWT_KEY } from "@repo/backend-common/config";
+import { CreateUserSchema , SignInSchema} from "@repo/common/types";
+const jwtKey = JWT_KEY;
 export const security: Router = Router();
-const userSchema = z.object({
-  username: z.string().min(8, "minimum 8 charaters requierd "),
-  password: z.string().min(8, "minimum 8 charaters requierd "),
-});
-security.post("login", (req, res) => {
-  
-  const { username, password } = userSchema.parse(req.body);
 
-  const encoded = jwt.sign({ id: username }, jwtKey);
+security.post("login", (req, res) => {
+  const data = CreateUserSchema.safeParse(req.body);
+  if (!data.success) {
+    res
+      .json({
+        ok: false,
+        message: "wrong data send ",
+      })
+      .status(403);
+  }
+  const encoded = jwt.sign({ id: data.data?.username }, jwtKey);
   res.json({
     token: encoded,
   });
+});
 
+security.post("signin", (req, res) => {
+  const data = SignInSchema.safeParse(req.body);
+  if (!data.success) {
+    res
+      .json({
+        ok: false,
+        message: "wrong data send ",
+      })
+      .status(403);
+  }
+  res.json({});
 });
