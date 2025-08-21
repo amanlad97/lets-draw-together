@@ -4,15 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": " .dist/index.js",
+    "start": "node dist/index.js",
     "build": "tsc -b ",
-    "dev": "pnpm run start && pnpm run build"
+    "dev": "pnpm run build && pnpm run start  "
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@repo/backend-common":"workspace:*",
+    "@repo/db":"workspace:*",
     "@repo/common":"workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/express": "^5.0.3",

@@ -1,11 +1,16 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
+
 import { JWT_KEY } from "@repo/backend-common/config";
-import { CreateUserSchema , SignInSchema} from "@repo/common/types";
+import { CreateUserSchema, SignInSchema } from "@repo/common/types";
+import { prismaClient } from "@repo/db/prisma";
+
 const jwtKey = JWT_KEY;
+
 export const security: Router = Router();
 
-security.post("login", (req, res) => {
+security.post("/login", (req, res) => {
+  console.log("qwert");
   const data = CreateUserSchema.safeParse(req.body);
   if (!data.success) {
     res
