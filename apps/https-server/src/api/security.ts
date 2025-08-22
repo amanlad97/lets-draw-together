@@ -9,7 +9,7 @@ const jwtKey = JWT_KEY;
 
 export const security: Router = Router();
 
-security.post("/login", async (req, res) => {
+security.post("/signin", async (req, res) => {
   const data = SignInSchema.safeParse(req.body);
   if (!data.data || !data.success) {
     return res
@@ -42,7 +42,7 @@ security.post("/login", async (req, res) => {
   });
 });
 
-security.post("signup", async (req, res) => {
+security.post("/signup", async (req, res) => {
   const data = CreateUserSchema.safeParse(req.body);
   if (!data.data || !data.success) {
     return res
@@ -72,14 +72,15 @@ security.post("signup", async (req, res) => {
     })
     .catch((error) => {
       res.json({
+        ok: false,
         message: "oops something went wrong",
         error,
       });
     });
-
+  console.log(temp);
   res
     .json({
-      ok: false,
+      ok: true,
       message: "signup was successful !!!",
     })
     .status(200);
