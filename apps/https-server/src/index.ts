@@ -7,10 +7,10 @@ import { room } from "./api/room";
 const app = express();
 app.use(express.json());
 
-app.use("/security", security);
+app.use("/v1/security", security);
 
 app.use(middleware);
 
-app.use("/room", room);
+app.use("/v1/room", room);
 
 app.listen(3001);
