@@ -10,5 +10,5 @@ export const SignInSchema = z.object({
   password: z.string().min(8, "minimum 8 charaters requierd "),
 });
 export const CreateRoomSchema = z.object({
-  name: z.string().min(3, "minimum 3 charaters requierd ").max(8),
+  slug: z.string().min(3, "minimum 3 charaters requierd ").max(8),
 });

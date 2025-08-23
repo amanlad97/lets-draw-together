@@ -19,24 +19,23 @@ security.post("/signin", async (req, res) => {
       })
       .status(403);
   }
-
+  const temp = await prismaClient.user.findFirst({
+    where: {
+      username: data.data.username,
+    },
+    select: {
+      id: true,
+      password: true,
+    },
+  });
+  if (!temp) return;
   const salt = await bcrypt.genSalt(5);
-  const hashedPassword = await bcrypt.hash(data.data?.password, salt);
-  const temp = await prismaClient.user
-    .findFirst({
-      where: {
-        username: data.data.username,
-        password: hashedPassword,
-      },
-    })
-    .catch((error) => {
-      return res.json({
-        message: "oops something went wrong",
-        error,
-      });
-    });
-  console.log(temp);
-  const encoded = jwt.sign({ id: data.data?.username }, jwtKey);
+  const hashedPassword = await bcrypt.compare(
+    data.data.password,
+    temp.password
+  );
+
+  const encoded = jwt.sign({ id: temp.id }, jwtKey);
   res.json({
     token: encoded,
   });
@@ -58,8 +57,6 @@ security.post("/signup", async (req, res) => {
     },
   });
 
-  console.log(existCheck);
-
   const salt = await bcrypt.genSalt(5);
   const hashedPassword = await bcrypt.hash(data.data?.password, salt);
   const temp = await prismaClient.user
@@ -77,7 +74,6 @@ security.post("/signup", async (req, res) => {
         error,
       });
     });
-  console.log(temp);
   res
     .json({
       ok: true,

@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/api/middleware.ts","./src/api/security.ts"],"version":"5.9.2"}
+{"root":["./src/index.ts","./src/api/middleware.ts","./src/api/room.ts","./src/api/security.ts","./src/types/index.d.ts"],"version":"5.9.2"}
