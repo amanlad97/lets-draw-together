@@ -13,6 +13,7 @@ middleware.use((req, res, next) => {
     });
     return;
   }
+
   const decrypt = jwt.verify(token, JWT_KEY);
   if (typeof decrypt === "string") {
     console.error("decrypt is a string ");

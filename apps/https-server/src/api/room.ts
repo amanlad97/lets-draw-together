@@ -19,12 +19,14 @@ room.post("/makeRoom", async (req, res) => {
       slug: parsedBody.data.slug,
     },
   });
+
   if (test) {
     return res.json({
       ok: false,
       message: "room already exists",
     });
   }
+
   const roomCreated = prismaClient.room
     .create({
       data: {
@@ -39,12 +41,38 @@ room.post("/makeRoom", async (req, res) => {
     roomCreated,
   });
 });
+
 room.get("/joinRoom", async (req, res) => {
   const roomSlug = req.query.room;
+
   if (typeof roomSlug !== "string") return;
-  prismaClient.room.findFirst({
+  const client = await prismaClient.room.findFirst({
     where: {
       slug: roomSlug,
     },
+    select: { id: true },
+  });
+
+  if (!client) return res.json({ ok: false, message: "room doesnt exist" });
+  res.json({
+    ok: true,
+    id: client.id,
+  });
+});
+
+room.get("chats", async (req, res) => {
+  const roomId = req.query.roomId || "";
+
+  if (typeof roomId !== "number") {
+    return res.json({ ok: false, message: "incorrect roomId format" });
+  }
+  prismaClient.chat.findMany({
+    where: {
+      roomId: roomId,
+    },
+    orderBy: {
+      id: "desc",
+    },
+    take: 15,
   });
 });
