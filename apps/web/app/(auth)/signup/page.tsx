@@ -8,7 +8,6 @@ export default function signin() {
       <CredentialText type={"text"} placeholder={"username"} />
       <CredentialText type={"password"} placeholder={"password"} />
       <CredentialText type={"text"} placeholder={"name"} />
-      <CredentialText type={"password"} placeholder={"password"} />
 
       <CredentialButton
         className="w-full m-3 p-3 bg-green-500 rounded-xl text-white font-bold focus:rounded-xl"
