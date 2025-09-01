@@ -2,6 +2,7 @@ import { type JSX } from "react";
 interface loginTextBox {
   type: "password" | "text";
   placeholder: string;
+  onChange?: () => null;
 }
 
 export const CredentialText = ({
