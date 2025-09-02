@@ -1,23 +1,23 @@
-"use client";
-
-import { ReactNode } from "react";
+import { MouseEventHandler, ReactNode } from "react";
 
 interface ButtonProps {
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
-  appName: string;
-  onclick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  type?: "reset" | "submit" | "button";
 }
 
 export const CredentialButton = ({
   children,
   className,
-  onclick,
+  type = "button",
+  onClick,
 }: ButtonProps) => {
   return (
     <button
+      type={type}
       className={`w-full m-3 p-3 bg-green-500 rounded-xl text-white font-bold focus:rounded-xl ${className}`}
-      onClick={onclick}
+      onClick={onClick}
     >
       {children}
     </button>

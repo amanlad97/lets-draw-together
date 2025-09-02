@@ -1,20 +1,63 @@
 import { CredentialButton } from "@repo/ui/CredentialButton";
 import { CredentialText } from "@repo/ui/CredentialText";
+import { useForm } from "react-hook-form";
 
-export default function signin() {
+type Inputs = {
+  username: string;
+  password: string;
+  name: string;
+};
+
+export default function Signup() {
+  const {
+    register,
+    handleSubmit,
+    // watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+
+  const onSubmitHandle = (data: Inputs) => {
+    console.log(data);
+    return null;
+  };
   return (
     <>
       <h3 className="font-stretch-90% text-3xl">Login</h3>
-      <CredentialText type={"text"} placeholder={"username"} />
-      <CredentialText type={"password"} placeholder={"password"} />
-      <CredentialText type={"text"} placeholder={"name"} />
-
-      <CredentialButton
-        className="w-full m-3 p-3 bg-green-500 rounded-xl text-white font-bold focus:rounded-xl"
-        appName={""}
-      >
-        submit
-      </CredentialButton>
+      <form onSubmit={handleSubmit(onSubmitHandle)}>
+        <CredentialText
+          {...register("username", {
+            required: "this field is required",
+            pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            minLength: 8,
+          })}
+          type={"text"}
+          placeholder={"username"}
+        />
+        <CredentialText
+          {...register("password", {
+            required: "this field is required",
+            minLength: 8,
+          })}
+          type={"password"}
+          placeholder={"password"}
+        />
+        {errors.username && "enter a valid email"}
+        <CredentialText
+          {...register("name", {
+            required: "this field is required",
+            minLength: 8,
+          })}
+          type={"text"}
+          placeholder={"name"}
+        />
+        {errors.username && "doesn't follow the pattern"}
+        <CredentialButton
+          type="submit"
+          className="w-full m-3 p-3 bg-green-500 rounded-xl text-white font-bold focus:rounded-xl"
+        >
+          submit
+        </CredentialButton>
+      </form>
       <h1>
         or maybe we can try{" "}
         <a className=" text-green-700" href="www.google.com">
