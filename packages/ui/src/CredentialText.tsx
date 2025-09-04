@@ -7,19 +7,20 @@ interface LoginTextBoxProps extends UseFormRegisterReturn {
   min?: string | number;
   max?: string | number;
   disabled?: boolean;
+  className?: string;
 }
 
 export const CredentialText = ({
+  className = "",
   type,
   placeholder,
   min,
   max,
   disabled,
-  onChange,
-  onBlur,
   name,
-  ref,
+  ...rest
 }: LoginTextBoxProps): JSX.Element => {
+  console.log(rest, className);
   return (
     <input
       type={type}
@@ -27,11 +28,10 @@ export const CredentialText = ({
       min={min}
       max={max}
       disabled={disabled}
-      onChange={onChange}
-      onBlur={onBlur}
       name={name}
-      ref={ref}
-      className="w-full m-3 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:rounded-xl"
+      // TODO -need to fix this outline 
+      className={`m-3 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 ${className}`}
+      {...rest}
     />
   );
 };

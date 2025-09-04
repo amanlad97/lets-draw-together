@@ -38,6 +38,7 @@ room.post("/makeRoom", async (req, res) => {
       console.error(e);
     });
   res.json({
+    ok: true,
     roomCreated,
   });
 });

@@ -1,6 +1,10 @@
+"use client";
 import { CredentialButton } from "@repo/ui/CredentialButton";
 import { CredentialText } from "@repo/ui/CredentialText";
+import axios from "axios";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { BACKEND_URL } from "../../config/config";
 type Inputs = {
   username: string;
   password: string;
@@ -13,14 +17,21 @@ export default function Signin() {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const onSubmitHandle = (data: Inputs) => {
-    console.log(data);
-    return null;
+  const onSubmitHandle = async (data: Inputs) => {
+    const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, {
+      username: data.username,
+      password: data.password,
+    });
+    console.log(res);
   };
+
   return (
     <>
       <h3 className="font-stretch-90% text-3xl">Login</h3>
-      <form onSubmit={handleSubmit(onSubmitHandle)}>
+      <form
+        onSubmit={handleSubmit(onSubmitHandle)}
+        className=" flex flex-col justify-center w-full"
+      >
         <CredentialText
           {...register("username", {
             required: "this field is required",
@@ -30,7 +41,9 @@ export default function Signin() {
           type={"text"}
           placeholder={"username"}
         />
-        {errors.username && "enter a valid email"}
+        <h1 className=" text-red-600 w-full text-center">
+          {errors.username && "enter a valid email"}
+        </h1>
         <CredentialText
           {...register("password", {
             required: "this field is required",
@@ -39,7 +52,10 @@ export default function Signin() {
           type={"password"}
           placeholder={"password"}
         />
-        {errors.username && "doesn't follow the pattern"}
+        <h1 className=" text-red-600 w-full text-center ">
+          {errors.password && "doesn't follow the pattern"}
+        </h1>
+
         <CredentialButton
           type="submit"
           className="w-full m-3 p-3 bg-green-500 rounded-xl text-white font-bold focus:rounded-xl"
@@ -49,9 +65,9 @@ export default function Signin() {
       </form>
       <h1>
         or maybe we can try{" "}
-        <a className=" text-green-700" href="www.google.com">
+        <Link className=" text-green-700" href="/signup">
           signup
-        </a>
+        </Link>
       </h1>
     </>
   );

@@ -6,78 +6,66 @@ import { CreateUserSchema, SignInSchema } from "@repo/common/types";
 import { prismaClient } from "@repo/db/prisma";
 
 const jwtKey = JWT_KEY;
-
 export const security: Router = Router();
 
 security.post("/signin", async (req, res) => {
   const data = SignInSchema.safeParse(req.body);
-  if (!data.data || !data.success) {
-    return res
-      .json({
-        ok: false,
-        message: "wrong data send ",
-      })
-      .status(403);
+  if (!data.success) {
+    return res.status(403).json({ ok: false, message: "Invalid input" });
   }
-  const temp = await prismaClient.user.findFirst({
-    where: {
-      username: data.data.username,
-    },
-    select: {
-      id: true,
-      password: true,
-    },
-  });
-  if (!temp) return;
-  const salt = await bcrypt.genSalt(5);
-  const hashedPassword = await bcrypt.compare(
-    data.data.password,
-    temp.password
-  );
 
-  const encoded = jwt.sign({ id: temp.id }, jwtKey);
-  res.json({
-    token: encoded,
+  const user = await prismaClient.user.findFirst({
+    where: { username: data.data.username },
+    select: { id: true, password: true },
   });
+
+  if (!user) {
+    return res.status(401).json({ ok: false, message: "User not found" });
+  }
+
+  const isPasswordValid = await bcrypt.compare(
+    data.data.password,
+    user.password
+  );
+  if (!isPasswordValid) {
+    return res.status(401).json({ ok: false, message: "Invalid credentials" });
+  }
+
+  const token = jwt.sign({ id: user.id }, jwtKey, { expiresIn: "1d" });
+
+  res
+    .cookie("session", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 1000 * 60 * 60 * 24,
+    })
+    .json({ ok: true, message: "Login successful" });
 });
 
 security.post("/signup", async (req, res) => {
   const data = CreateUserSchema.safeParse(req.body);
-  if (!data.data || !data.success) {
-    return res
-      .json({
-        ok: false,
-        message: "wrong data send ",
-      })
-      .status(403);
+  if (!data.success) {
+    return res.status(403).json({ ok: false, message: "Invalid input" });
   }
-  const existCheck = prismaClient.user.findFirst({
-    where: {
+
+  const existCheck = await prismaClient.user.findFirst({
+    where: { username: data.data.username },
+  });
+
+  if (existCheck) {
+    return res.status(400).json({ ok: false, message: "User already exists" });
+  }
+
+  const hashedPassword = await bcrypt.hash(data.data.password, 10);
+
+  await prismaClient.user.create({
+    data: {
       username: data.data.username,
+      password: hashedPassword,
+      name: data.data.name,
     },
   });
 
-  const salt = await bcrypt.genSalt(5);
-  const hashedPassword = await bcrypt.hash(data.data?.password, salt);
-  const temp = await prismaClient.user
-    .create({
-      data: {
-        username: data.data.username,
-        password: hashedPassword,
-        name: data.data.name,
-      },
-    })
-    .catch((error) => {
-      res.json({
-        ok: false,
-        message: "oops something went wrong",
-        error,
-      });
-    });
-  res
-    .json({
-      ok: true,
-      message: "signup was successful !!!",
-    })
-    .status(200);
+  res.status(200).json({ ok: true, message: "Signup successful!" });
 });
