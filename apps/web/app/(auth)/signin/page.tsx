@@ -4,30 +4,36 @@ import { CredentialText } from "@repo/ui/CredentialText";
 import axios from "axios";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { BACKEND_URL } from "../../config/config";
+import { BACKEND_URL } from "../../config";
+
 type Inputs = {
   username: string;
   password: string;
 };
+
 export default function Signin() {
   const {
     register,
     handleSubmit,
-    // watch,
     formState: { errors },
   } = useForm<Inputs>();
 
   const onSubmitHandle = async (data: Inputs) => {
-    const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, {
-      username: data.username,
-      password: data.password,
-    });
+    const res = await axios.post(
+      `${BACKEND_URL}/v1/security/signin`,
+      {
+        username: data.username,
+        password: data.password,
+      },
+      { withCredentials: true }
+    );
     console.log(res);
   };
 
   return (
     <>
       <h3 className="font-stretch-90% text-3xl">Login</h3>
+
       <form
         onSubmit={handleSubmit(onSubmitHandle)}
         className=" flex flex-col justify-center w-full"
@@ -55,7 +61,6 @@ export default function Signin() {
         <h1 className=" text-red-600 w-full text-center ">
           {errors.password && "doesn't follow the pattern"}
         </h1>
-
         <CredentialButton
           type="submit"
           className="w-full m-3 p-3 bg-green-500 rounded-xl text-white font-bold focus:rounded-xl"

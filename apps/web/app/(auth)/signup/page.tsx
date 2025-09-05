@@ -2,7 +2,7 @@
 import { CredentialButton } from "@repo/ui/CredentialButton";
 import { CredentialText } from "@repo/ui/CredentialText";
 import { useForm } from "react-hook-form";
-import { BACKEND_URL } from "../../config/config";
+import { BACKEND_URL } from "../../config";
 import axios from "axios";
 import Link from "next/link";
 type Inputs = {
@@ -20,11 +20,15 @@ export default function Signup() {
   } = useForm<Inputs>();
 
   const onSubmitHandle = async (data: Inputs) => {
-    const res = await axios.post(`${BACKEND_URL}/v1/security/signup`, {
-      username: data.username,
-      password: data.password,
-      name: data.name,
-    });
+    const res = await axios.post(
+      `${BACKEND_URL}/v1/securit/signup`,
+      {
+        username: data.username,
+        password: data.password,
+        name: data.name,
+      },
+      { withCredentials: true }
+    );
     console.log(res);
   };
   return (

@@ -34,7 +34,7 @@ security.post("/signin", async (req, res) => {
   const token = jwt.sign({ id: user.id }, jwtKey, { expiresIn: "1d" });
 
   res
-    .cookie("session", token, {
+    .cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",

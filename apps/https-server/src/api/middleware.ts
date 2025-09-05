@@ -1,11 +1,13 @@
 import { JWT_KEY } from "@repo/backend-common/config";
 import { Router } from "express";
+import cookieParser from "cookie-parser";
 import jwt, { JwtHeader, JwtPayload } from "jsonwebtoken";
 
 export const middleware: Router = Router();
-
+middleware.use(cookieParser());
 middleware.use((req, res, next) => {
-  const token = req.get("token");
+  const token = req.cookies.token;
+  // res.json(token);
   if (!token) {
     res.json({
       ok: false,
