@@ -20,7 +20,6 @@ export const CredentialText = ({
   name,
   ...rest
 }: LoginTextBoxProps): JSX.Element => {
-  console.log(rest, className);
   return (
     <input
       type={type}
@@ -29,7 +28,7 @@ export const CredentialText = ({
       max={max}
       disabled={disabled}
       name={name}
-      // TODO -need to fix this outline 
+      // TODO -need to fix this outline
       className={`m-3 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 ${className}`}
       {...rest}
     />

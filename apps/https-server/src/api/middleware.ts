@@ -7,7 +7,6 @@ export const middleware: Router = Router();
 middleware.use(cookieParser());
 middleware.use((req, res, next) => {
   const token = req.cookies.token;
-  // res.json(token);
   if (!token) {
     res.json({
       ok: false,

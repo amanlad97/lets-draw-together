@@ -61,19 +61,22 @@ room.get("/joinRoom", async (req, res) => {
   });
 });
 
-room.get("chats", async (req, res) => {
+room.get("/chats", async (req, res) => {
   const roomId = req.query.roomId || "";
-
-  if (typeof roomId !== "number") {
+  if (typeof roomId !== "string") {
     return res.json({ ok: false, message: "incorrect roomId format" });
   }
-  prismaClient.chat.findMany({
+  const parsedRoomId = parseInt(roomId);
+
+  const response = await prismaClient.chat.findMany({
     where: {
-      roomId: roomId,
+      roomId: parsedRoomId,
     },
     orderBy: {
       id: "desc",
     },
     take: 15,
   });
+
+  res.json({ data: response });
 });
