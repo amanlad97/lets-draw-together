@@ -1,17 +1,50 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { draw } from "./draw";
+import { Game } from "./game";
+import { connectWebSocket } from "./websocket";
 
 const Dashboard = () => {
   const drawing = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
-    if (drawing.current) {
-      const canvas = drawing.current;
-      //   canvas.width = window.innerWidth;
-      //   canvas.height = window.innerHeight;
-      draw(canvas);
+    const canvas = drawing.current;
+    if (canvas) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      canvas.style.background = "black";
+      const ws = connectWebSocket(12);
+
+      const game = new Game(canvas, 12, ws);
+      game.selectShape("pencil");
+
+
+      return () => {
+        ws.close();
+        game.destroy();
+      };
     }
-  }, [drawing]);
-  return <canvas ref={drawing} className="w-screen h-screen"></canvas>;
+  }, []);
+  useEffect(() => {
+    const handleResize = () => {
+      const canvas = drawing.current;
+      if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return (
+    <div>
+      <canvas ref={drawing} className="w-screen h-screen"></canvas>
+    </div>
+  );
 };
+
 export default Dashboard;
