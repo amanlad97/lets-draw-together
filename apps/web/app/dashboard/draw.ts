@@ -1,14 +1,6 @@
-import axios from "axios";
-import { BACKEND_URL } from "../config";
-import { connectWebSocket, joinRoom } from "./websocket";
+import { getExistingShapes } from "./https";
 
 type Shape = { x: number; y: number; width: number; height: number };
-
-type ExistingShapesResponse = {
-  ws: WebSocket;
-  chats: Shape[];
-};
-
 function normalizeShape(shape: Shape): Shape {
   let { x, y, width, height } = shape;
 
@@ -58,6 +50,7 @@ export const draw = async (canvas: HTMLCanvasElement): Promise<void> => {
 
   ws.onmessage = (event: MessageEvent) => {
     try {
+      console.log("message delivered");
       const data = JSON.parse(event.data);
       if (data.type === "chat" && data.message) {
         const shape: Shape = normalizeShape(JSON.parse(data.message));
@@ -106,31 +99,4 @@ export const draw = async (canvas: HTMLCanvasElement): Promise<void> => {
   canvas.addEventListener("mousedown", mousedown);
   canvas.addEventListener("mouseup", mouseup);
   canvas.addEventListener("mousemove", mousemove);
-};
-
-const getExistingShapes = async (
-  roomId: number
-): Promise<ExistingShapesResponse> => {
-  try {
-    const token = localStorage.getItem("token");
-
-    const res = await axios.get(`${BACKEND_URL}/v1/room/chats`, {
-      params: { roomId },
-      headers: { token },
-    });
-
-    const formateChats = (chats: {
-      data: { response: string[]; ok: boolean };
-    }): Shape[] => {
-      return chats.data.response.map((element) => {
-        return JSON.parse(element);
-      });
-    };
-    const ws = connectWebSocket();
-    joinRoom(ws, 12);
-    return { ws, chats: formateChats(res) };
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
 };
