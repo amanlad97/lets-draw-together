@@ -1,15 +1,7 @@
 import axios from "axios";
 import { BACKEND_URL } from "../config";
-import { connectWebSocket } from "./websocket";
 
-type ExistingShapesResponse = {
-  //   ws: WebSocket;
-  chats: Shape[];
-};
-
-type Shape = { x: number; y: number; width: number; height: number };
-
-export const getExistingShapes = async (roomId: number): Promise<Shape[]> => {
+export const getExistingShapes = async (roomId: number) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -17,28 +9,12 @@ export const getExistingShapes = async (roomId: number): Promise<Shape[]> => {
       params: { roomId },
       headers: { token },
     });
-
-    const formateChats = (chats: {
-      data: {
-        response: {
-          message: string;
-          id: number;
-          roomId: number;
-          userId: string;
-        }[];
-        ok: boolean;
-      };
-    }): Shape[] => {
-      console.log(chats);
-      return chats.data.response.map((element) => {
-        console.log(element);
-        return JSON.parse(element.message);
-      });
-    };
-    const ws = connectWebSocket(roomId);
-    return formateChats(res);
+    const shapes = res.data.response.map((x: { message: string }) => {
+      return JSON.parse(x.message);
+    });
+    console.log("https/shapes in the get existingshapes call", shapes);
+    return shapes;
   } catch (error) {
-    console.error(error);
-    throw error;
+    return error;
   }
 };
