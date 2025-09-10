@@ -33,14 +33,7 @@ security.post("/signin", async (req, res) => {
 
   const token = jwt.sign({ id: user.id }, jwtKey, { expiresIn: "1d" });
 
-  res
-    .cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 1000 * 60 * 60 * 24,
-    })
-    .json({ ok: true, message: "Login successful" });
+  res.json({ message: "signin successfull", token });
 });
 
 security.post("/signup", async (req, res) => {

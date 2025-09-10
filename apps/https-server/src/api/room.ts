@@ -78,5 +78,5 @@ room.get("/chats", async (req, res) => {
     take: 15,
   });
 
-  res.json({ data: response });
+  res.json({ ok: true, response });
 });
