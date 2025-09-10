@@ -1,5 +1,5 @@
 import { WebSocketServer, WebSocket } from "ws";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { JWT_KEY } from "@repo/backend-common/config";
 import { prismaClient } from "@repo/db/prisma";
 const jwtKey = JWT_KEY;

@@ -5,6 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { BACKEND_URL } from "../../config";
+import { useRouter } from "next/navigation";
 
 type Inputs = {
   username: string;
@@ -17,17 +18,14 @@ export default function Signin() {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-
+  const router = useRouter();
   const onSubmitHandle = async (data: Inputs) => {
-    const res = await axios.post(
-      `${BACKEND_URL}/v1/security/signin`,
-      {
-        username: data.username,
-        password: data.password,
-      },
-      { withCredentials: true }
-    );
-    console.log(res);
+    const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, {
+      username: data.username,
+      password: data.password,
+    });
+    localStorage.setItem("token", res.data.token);
+    router.push("/dashboard");
   };
 
   return (
