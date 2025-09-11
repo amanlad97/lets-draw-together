@@ -63,6 +63,10 @@ room.get("/joinRoom", async (req, res) => {
 
 room.get("/chats", async (req, res) => {
   const roomId = req.query.roomId || "";
+  console.log(
+    typeof roomId,
+    "heloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo"
+  );
   if (typeof roomId !== "string") {
     return res.json({ ok: false, message: "incorrect roomId format" });
   }

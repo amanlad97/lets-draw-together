@@ -2,7 +2,7 @@ import { getExistingShapes } from "./https";
 
 type Shape =
   | {
-      type: "rect";
+      type: "rectangle";
       x: number;
       y: number;
       width: number;
@@ -19,7 +19,7 @@ type Shape =
       points: { x: number; y: number }[];
     };
 
-type ShapeType = "circle" | "rect" | "pencil";
+type ShapeType = "circle" | "rectangle" | "pencil";
 
 export class Game {
   private existingShapes: Shape[] = [];
@@ -30,7 +30,7 @@ export class Game {
   private canvas: HTMLCanvasElement;
   private roomId: number;
   private socket: WebSocket;
-  private shape: ShapeType = "circle";
+  shape: ShapeType = "circle";
   private pencilPoints: { x: number; y: number }[] = [];
 
   constructor(canvas: HTMLCanvasElement, roomId: number, ws: WebSocket) {
@@ -41,6 +41,7 @@ export class Game {
     this.init();
     this.initHandler();
     this.initMouseHandlers();
+    this.clear();
   }
 
   destroy() {
@@ -50,8 +51,13 @@ export class Game {
   }
 
   private async init() {
-    this.existingShapes = await getExistingShapes(this.roomId);
-    this.clear(); 
+    try {
+      this.existingShapes = await getExistingShapes(this.roomId);
+      console.log(this.existingShapes);
+      this.clear();
+    } catch (error) {
+      console.error("Failed to load existing shapes:", error);
+    }
   }
 
   private initHandler() {
@@ -61,7 +67,7 @@ export class Game {
         if (data.type === "chat" && data.message) {
           const shape: Shape = JSON.parse(data.message);
           this.existingShapes.push(shape);
-          this.clear(); // Re-render after receiving new shape
+          this.clear();
         }
       } catch (err) {
         console.error("Error parsing WebSocket message:", err);
@@ -86,10 +92,12 @@ export class Game {
 
   private clear = () => {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
+    console.log(this.existingShapes);
     this.existingShapes.forEach((shape) => {
-      if (shape.type === "rect") {
-        this.ctx.strokeStyle = "white";
+      this.ctx.strokeStyle = "#ffffff";
+      this.ctx.lineWidth = 2;
+
+      if (shape.type === "rectangle") {
         this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
       } else if (shape.type === "circle") {
         this.ctx.beginPath();
@@ -105,21 +113,31 @@ export class Game {
       } else if (shape.type === "pencil") {
         this.ctx.beginPath();
         const [firstPoint, ...restPoints] = shape.points;
-        this.ctx.moveTo(firstPoint?.x || 0, firstPoint?.y || 0);
-        restPoints.forEach((point) => {
-          this.ctx.lineTo(point.x, point.y);
-        });
-        this.ctx.stroke();
+        if (firstPoint) {
+          this.ctx.moveTo(firstPoint.x, firstPoint.y);
+          restPoints.forEach((point) => {
+            this.ctx.lineTo(point.x, point.y);
+          });
+          this.ctx.stroke();
+        }
         this.ctx.closePath();
       }
     });
   };
 
+  private getMousePos(event: MouseEvent) {
+    const rectangle = this.canvas.getBoundingClientRect();
+    return {
+      x: event.clientX - rectangle.left,
+      y: event.clientY - rectangle.top,
+    };
+  }
+
   private mousedown = (event: MouseEvent) => {
-    const rect = this.canvas.getBoundingClientRect();
+    const pos = this.getMousePos(event);
     this.isDrawing = true;
-    this.startX = event.clientX - rect.left;
-    this.startY = event.clientY - rect.top;
+    this.startX = pos.x;
+    this.startY = pos.y;
 
     if (this.shape === "pencil") {
       this.pencilPoints = [{ x: this.startX, y: this.startY }];
@@ -127,52 +145,65 @@ export class Game {
   };
 
   private mousemove = (event: MouseEvent) => {
-    if (this.isDrawing) {
-      const width = event.clientX - this.startX;
-      const height = event.clientY - this.startY;
-      this.clear();
+    if (!this.isDrawing) return;
 
-      this.ctx.strokeStyle = "white";
-      if (this.shape === "rect") {
-        this.ctx.strokeRect(this.startX, this.startY, width, height);
-      } else if (this.shape === "circle") {
-        const radius = Math.max(width, height) / 2;
-        const centerX = this.startX + radius;
-        const centerY = this.startY + radius;
-        this.ctx.beginPath();
-        this.ctx.arc(centerX, centerY, Math.abs(radius), 0, Math.PI * 2);
-        this.ctx.stroke();
-        this.ctx.closePath();
-      } else if (this.shape === "pencil") {
-        this.pencilPoints.push({
-          x: event.clientX - this.canvas.getBoundingClientRect().left,
-          y: event.clientY - this.canvas.getBoundingClientRect().top,
+    const pos = this.getMousePos(event);
+    const width = pos.x - this.startX;
+    const height = pos.y - this.startY;
+
+    this.clear();
+    this.ctx.strokeStyle = "#ffffff";
+    this.ctx.lineWidth = 2;
+
+    if (this.shape === "rectangle") {
+      this.ctx.strokeRect(this.startX, this.startY, width, height);
+    } else if (this.shape === "circle") {
+      const radius = Math.sqrt(width * width + height * height) / 2;
+      const centerX = this.startX + width / 2;
+      const centerY = this.startY + height / 2;
+      this.ctx.beginPath();
+      this.ctx.arc(centerX, centerY, Math.abs(radius), 0, Math.PI * 2);
+      this.ctx.stroke();
+      this.ctx.closePath();
+    } else if (this.shape === "pencil") {
+      this.pencilPoints.push({ x: pos.x, y: pos.y });
+      this.ctx.beginPath();
+      const [firstPoint, ...restPoints] = this.pencilPoints;
+      if (firstPoint) {
+        this.ctx.moveTo(firstPoint.x, firstPoint.y);
+        restPoints.forEach((point) => {
+          this.ctx.lineTo(point.x, point.y);
         });
-        this.clear();
+        this.ctx.stroke();
       }
+      this.ctx.closePath();
     }
   };
 
   private mouseup = (event: MouseEvent) => {
+    if (!this.isDrawing) return;
+
     this.isDrawing = false;
-    const width = event.clientX - this.startX;
-    const height = event.clientY - this.startY;
+    const pos = this.getMousePos(event);
+    const width = pos.x - this.startX;
+    const height = pos.y - this.startY;
 
     let shape: Shape | null = null;
-    if (this.shape === "rect") {
+
+    if (this.shape === "rectangle") {
       shape = {
-        type: "rect",
+        type: "rectangle",
         x: this.startX,
         y: this.startY,
         width,
         height,
       };
     } else if (this.shape === "circle") {
-      const radius = Math.max(width, height) / 2;
+      const radius = Math.sqrt(width * width + height * height) / 2;
       shape = {
         type: "circle",
-        centerX: this.startX + radius,
-        centerY: this.startY + radius,
+        centerX: this.startX + width / 2,
+        centerY: this.startY + height / 2,
         radius,
       };
     } else if (this.shape === "pencil" && this.pencilPoints.length > 1) {
