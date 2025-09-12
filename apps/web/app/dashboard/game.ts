@@ -1,25 +1,5 @@
 import { getExistingShapes } from "./https";
-
-type Shape =
-  | {
-      type: "rectangle";
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    }
-  | {
-      type: "circle";
-      centerX: number;
-      centerY: number;
-      radius: number;
-    }
-  | {
-      type: "pencil";
-      points: { x: number; y: number }[];
-    };
-
-type ShapeType = "circle" | "rectangle" | "pencil";
+import { Shape, ShapeType } from "./types";
 
 export class Game {
   private existingShapes: Shape[] = [];
@@ -30,30 +10,29 @@ export class Game {
   private canvas: HTMLCanvasElement;
   private roomId: number;
   private socket: WebSocket;
-  shape: ShapeType = "circle";
   private pencilPoints: { x: number; y: number }[] = [];
-
+  private shape: ShapeType = "circle";
+  final: Promise<void>;
   constructor(canvas: HTMLCanvasElement, roomId: number, ws: WebSocket) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d")!;
     this.roomId = roomId;
     this.socket = ws;
-    this.init();
+    this.final = this.init();
     this.initHandler();
     this.initMouseHandlers();
     this.clear();
   }
 
   destroy() {
-    this.canvas.removeEventListener("mousedown", this.mousedown);
-    this.canvas.removeEventListener("mouseup", this.mouseup);
-    this.canvas.removeEventListener("mousemove", this.mousemove);
+    this.canvas.removeEventListener("pointerdown", this.pointerdown);
+    this.canvas.removeEventListener("pointerup", this.pointerup);
+    this.canvas.removeEventListener("pointermove", this.pointermove);
   }
 
   private async init() {
     try {
-      this.existingShapes = await getExistingShapes(this.roomId);
-      console.log(this.existingShapes);
+      this.existingShapes = (await getExistingShapes(this.roomId)) || [];
       this.clear();
     } catch (error) {
       console.error("Failed to load existing shapes:", error);
@@ -133,7 +112,7 @@ export class Game {
     };
   }
 
-  private mousedown = (event: MouseEvent) => {
+  private pointerdown = (event: MouseEvent) => {
     const pos = this.getMousePos(event);
     this.isDrawing = true;
     this.startX = pos.x;
@@ -144,7 +123,7 @@ export class Game {
     }
   };
 
-  private mousemove = (event: MouseEvent) => {
+  private pointermove = (event: MouseEvent) => {
     if (!this.isDrawing) return;
 
     const pos = this.getMousePos(event);
@@ -180,7 +159,7 @@ export class Game {
     }
   };
 
-  private mouseup = (event: MouseEvent) => {
+  private pointerup = (event: MouseEvent) => {
     if (!this.isDrawing) return;
 
     this.isDrawing = false;
@@ -221,8 +200,8 @@ export class Game {
   };
 
   private initMouseHandlers() {
-    this.canvas.addEventListener("mousedown", this.mousedown);
-    this.canvas.addEventListener("mouseup", this.mouseup);
-    this.canvas.addEventListener("mousemove", this.mousemove);
+    this.canvas.addEventListener("pointerdown", this.pointerdown);
+    this.canvas.addEventListener("pointerup", this.pointerup);
+    this.canvas.addEventListener("pointermove", this.pointermove);
   }
 }

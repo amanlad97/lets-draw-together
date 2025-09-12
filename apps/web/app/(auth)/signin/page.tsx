@@ -44,6 +44,7 @@ export default function Signin() {
           })}
           type={"text"}
           placeholder={"username"}
+          error={errors.password}
         />
         <h1 className=" text-red-600 w-full text-center">
           {errors.username && "enter a valid email"}
@@ -55,20 +56,21 @@ export default function Signin() {
           })}
           type={"password"}
           placeholder={"password"}
+          error={errors.password}
         />
         <h1 className=" text-red-600 w-full text-center ">
           {errors.password && "doesn't follow the pattern"}
         </h1>
         <CredentialButton
           type="submit"
-          className="w-full m-3 p-3 bg-green-500 rounded-xl text-white font-bold focus:rounded-xl"
+          className=" rounded-xl text-white font-bold focus:rounded-xl"
         >
-          submit
+          SUBMIT
         </CredentialButton>
       </form>
       <h1>
         or maybe we can try{" "}
-        <Link className=" text-green-700" href="/signup">
+        <Link className=" text-gray-400 underline" href="/signup">
           signup
         </Link>
       </h1>

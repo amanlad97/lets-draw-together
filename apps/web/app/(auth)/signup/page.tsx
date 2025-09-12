@@ -67,7 +67,7 @@ export default function Signup() {
           type="submit"
           className="w-full m-3 p-3 bg-green-500 rounded-xl text-white font-bold focus:rounded-xl"
         >
-          submit
+          SUBMIT
         </CredentialButton>
       </form>
       <h1>

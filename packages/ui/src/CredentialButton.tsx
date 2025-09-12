@@ -16,7 +16,7 @@ export const CredentialButton = ({
   return (
     <button
       type={type}
-      className={` m-3 p-3 bg-green-500 rounded-xl text-white font-bold focus:rounded-xl ${className}`}
+      className={`hover:bg-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-gray-100 active:bg-white active:text-black m-3 p-3 bg-gray-700 rounded-xl text-white font-bold focus:rounded-xl ${className || ""}`}
       onClick={onClick}
     >
       {children}

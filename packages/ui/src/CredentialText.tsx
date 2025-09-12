@@ -8,6 +8,7 @@ interface LoginTextBoxProps extends UseFormRegisterReturn {
   max?: string | number;
   disabled?: boolean;
   className?: string;
+  error?:boolean
 }
 
 export const CredentialText = ({
@@ -28,8 +29,7 @@ export const CredentialText = ({
       max={max}
       disabled={disabled}
       name={name}
-      // TODO -need to fix this outline
-      className={`m-3 p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 ${className}`}
+      className={`m-3 p-3 invalid:outline-red-600 focus:outline-none focus:ring-2 focus:ring-white bg-black rounded-xl ${className}`}
       {...rest}
     />
   );

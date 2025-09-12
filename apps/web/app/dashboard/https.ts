@@ -1,7 +1,10 @@
 import axios from "axios";
 import { BACKEND_URL } from "../config";
+import { Shape } from "./types";
 
-export const getExistingShapes = async (roomId: number) => {
+export const getExistingShapes = async (
+  roomId: number
+): Promise<Shape[] | null> => {
   try {
     const token = localStorage.getItem("token");
 
@@ -9,12 +12,29 @@ export const getExistingShapes = async (roomId: number) => {
       params: { roomId },
       headers: { token },
     });
-    const shapes = res.data.response.map((x: { message: string }) => {
-      return JSON.parse(x.message);
+
+    if (res.status !== 200) {
+      console.warn("Non-200 response:", res.status);
+      return null;
+    }
+
+    if (!Array.isArray(res.data.response)) {
+      console.warn("Unexpected response format:", res.data);
+      return null;
+    }
+
+    const shapes: Shape[] = res.data.response.map((x: { message: string }) => {
+      try {
+        return JSON.parse(x.message);
+      } catch {
+        console.warn("Failed to parse shape:", x.message);
+        return null;
+      }
     });
-    console.log("https/shapes in the get existingshapes call", shapes);
+    console.log("Fetched shapes:", shapes);
     return shapes;
   } catch (error) {
-    return error;
+    console.error("Error fetching shapes:", error);
+    return null;
   }
 };
