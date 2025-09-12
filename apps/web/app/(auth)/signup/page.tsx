@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { BACKEND_URL } from "../../config";
 import axios from "axios";
 import Link from "next/link";
+
 type Inputs = {
   username: string;
   password: string;
@@ -15,65 +16,85 @@ export default function Signup() {
   const {
     register,
     handleSubmit,
-    // watch,
     formState: { errors },
   } = useForm<Inputs>();
 
   const onSubmitHandle = async (data: Inputs) => {
-    const res = await axios.post(
-      `${BACKEND_URL}/v1/securit/signup`,
-      {
-        username: data.username,
-        password: data.password,
-        name: data.name,
-      },
-      { withCredentials: true }
-    );
+    const res = await axios.post(`${BACKEND_URL}/v1/security/signup`, data, {
+      withCredentials: true,
+    });
     console.log(res);
   };
   return (
     <>
-      <h3 className="font-stretch-90% text-3xl">Login</h3>
+      <h3 className="font-stretch-90% text-3xl">Signup</h3>
       <form
         onSubmit={handleSubmit(onSubmitHandle)}
-        className=" flex flex-col justify-center w-full"
+        className="flex flex-col justify-center w-full"
       >
         <CredentialText
           {...register("username", {
             required: "this field is required",
-            pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            minLength: 8,
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: "enter a valid email",
+            },
+            minLength: {
+              value: 8,
+              message: "email must be at least 8 characters",
+            },
           })}
-          type={"text"}
-          placeholder={"username"}
+          type="text"
+          placeholder="email"
+          error={errors.username}
         />
+        {errors.username && (
+          <p className="text-red-600 w-full text-center">
+            {errors.username.message}
+          </p>
+        )}
+
         <CredentialText
           {...register("password", {
             required: "this field is required",
-            minLength: 8,
+            minLength: {
+              value: 8,
+              message: "password must be at least 8 characters",
+            },
           })}
-          type={"password"}
-          placeholder={"password"}
+          type="password"
+          placeholder="password"
+          error={errors.password}
         />
-        {errors.username && "enter a valid email"}
+        {errors.password && (
+          <p className="text-red-600 w-full text-center">
+            {errors.password.message}
+          </p>
+        )}
+
         <CredentialText
-          {...register("name", {
-            required: "this field is required",
-          })}
-          type={"text"}
-          placeholder={"name"}
+          {...register("name", { required: "this field is required" })}
+          type="text"
+          placeholder="name"
+          error={errors.name}
         />
+        {errors.name && (
+          <p className="text-red-600 w-full text-center">
+            {errors.name.message}
+          </p>
+        )}
+
         <CredentialButton
           type="submit"
-          className="w-full m-3 p-3 bg-green-500 rounded-xl text-white font-bold focus:rounded-xl"
+          className="rounded-xl text-white font-bold focus:rounded-xl"
         >
           SUBMIT
         </CredentialButton>
       </form>
       <h1>
         or maybe we can try{" "}
-        <Link className=" text-green-700" href="/signin">
-          signup
+        <Link className="text-gray-400 underline" href="/signin">
+          signin
         </Link>
       </h1>
     </>

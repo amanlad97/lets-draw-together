@@ -20,10 +20,7 @@ export default function Signin() {
   } = useForm<Inputs>();
   const router = useRouter();
   const onSubmitHandle = async (data: Inputs) => {
-    const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, {
-      username: data.username,
-      password: data.password,
-    });
+    const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, data);
     localStorage.setItem("token", res.data.token);
     router.push("/dashboard");
   };
@@ -34,43 +31,54 @@ export default function Signin() {
 
       <form
         onSubmit={handleSubmit(onSubmitHandle)}
-        className=" flex flex-col justify-center w-full"
+        className="flex flex-col justify-center w-full"
       >
         <CredentialText
           {...register("username", {
             required: "this field is required",
-            pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            minLength: 8,
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: "enter a valid email",
+            },
+            minLength: {
+              value: 8,
+              message: "username must be at least 8 characters",
+            },
           })}
-          type={"text"}
-          placeholder={"username"}
-          error={errors.password}
+          type="text"
+          placeholder="username"
+          error={errors.username}
         />
-        <h1 className=" text-red-600 w-full text-center">
-          {errors.username && "enter a valid email"}
+        <h1 className="text-red-600 w-full text-center">
+          {errors.username?.message}
         </h1>
         <CredentialText
           {...register("password", {
             required: "this field is required",
-            minLength: 8,
+            minLength: {
+              value: 8,
+              message: "password must be at least 8 characters",
+            },
           })}
-          type={"password"}
-          placeholder={"password"}
+          type="password"
+          placeholder="password"
           error={errors.password}
         />
-        <h1 className=" text-red-600 w-full text-center ">
-          {errors.password && "doesn't follow the pattern"}
+        <h1 className="text-red-600 w-full text-center">
+          {errors.password?.message}
         </h1>
+
         <CredentialButton
           type="submit"
-          className=" rounded-xl text-white font-bold focus:rounded-xl"
+          className="rounded-xl text-white font-bold focus:rounded-xl"
         >
           SUBMIT
         </CredentialButton>
       </form>
+
       <h1>
         or maybe we can try{" "}
-        <Link className=" text-gray-400 underline" href="/signup">
+        <Link className="text-gray-400 underline" href="/signup">
           signup
         </Link>
       </h1>

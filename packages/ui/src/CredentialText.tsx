@@ -1,5 +1,5 @@
 import { type JSX } from "react";
-import { UseFormRegisterReturn } from "react-hook-form";
+import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
 interface LoginTextBoxProps extends UseFormRegisterReturn {
   type: "password" | "text";
@@ -8,7 +8,7 @@ interface LoginTextBoxProps extends UseFormRegisterReturn {
   max?: string | number;
   disabled?: boolean;
   className?: string;
-  error?:boolean
+  error?: FieldError | undefined;
 }
 
 export const CredentialText = ({
@@ -19,8 +19,10 @@ export const CredentialText = ({
   max,
   disabled,
   name,
+  error,
   ...rest
 }: LoginTextBoxProps): JSX.Element => {
+  console.log(error);
   return (
     <input
       type={type}
@@ -29,7 +31,7 @@ export const CredentialText = ({
       max={max}
       disabled={disabled}
       name={name}
-      className={`m-3 p-3 invalid:outline-red-600 focus:outline-none focus:ring-2 focus:ring-white bg-black rounded-xl ${className}`}
+      className={`m-3 p-3 rounded-xl bg-black focus:outline-none ${error ? "ring-2 ring-red-600" : "focus:ring-2 focus:ring-white"} ${className}`}
       {...rest}
     />
   );
