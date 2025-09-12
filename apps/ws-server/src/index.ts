@@ -22,53 +22,56 @@ wss.on("connection", function connection(ws, request) {
   }
   const queryParams = new URLSearchParams(request.url.split("?")[1]);
   const token = queryParams.get("token") || "";
-
-  const decoded = jwt.verify(token, jwtKey);
-  if (!decoded || typeof decoded === "string") {
-    ws.close();
-    return;
-  }
-  users.push({ userId: decoded.id, ws: ws, rooms: [] });
-
-  ws.on("message", async function message(message: String) {
-    const payload: payload = JSON.parse(message.toString());
-    switch (payload.type) {
-      case "chat":
-        const res = await prismaClient.chat.create({
-          data: {
-            roomId: payload.roomId,
-            userId: decoded.id,
-            message: payload.message,
-          },
-        });
-        console.log(users, payload);
-        users.forEach((user) => {
-          if (user.rooms.includes(payload.roomId)) {
-            console.log(user, payload);
-            user.ws.send(
-              JSON.stringify({
-                message: payload.message,
-                type: payload.type,
-              })
-            );
-          }
-        });
-        break;
-
-      case "join":
-        users.find((user) => {
-          user.rooms.push(payload.roomId);
-        });
-        break;
-
-      case "leave":
-        users.find((user) => {
-          user.rooms = user.rooms.filter((x) => x !== payload.roomId);
-        });
-        break;
-
-      default:
-        break;
+  try {
+    const decoded = jwt.verify(token, jwtKey);
+    if (!decoded || typeof decoded === "string") {
+      ws.close();
+      return;
     }
-  });
+    users.push({ userId: decoded.id, ws: ws, rooms: [] });
+
+    ws.on("message", async function message(message: String) {
+      const payload: payload = JSON.parse(message.toString());
+      switch (payload.type) {
+        case "chat":
+          const res = await prismaClient.chat.create({
+            data: {
+              roomId: payload.roomId,
+              userId: decoded.id,
+              message: payload.message,
+            },
+          });
+          console.log(users, payload);
+          users.forEach((user) => {
+            if (user.rooms.includes(payload.roomId)) {
+              console.log(user, payload);
+              user.ws.send(
+                JSON.stringify({
+                  message: payload.message,
+                  type: payload.type,
+                })
+              );
+            }
+          });
+          break;
+
+        case "join":
+          users.find((user) => {
+            user.rooms.push(payload.roomId);
+          });
+          break;
+
+        case "leave":
+          users.find((user) => {
+            user.rooms = user.rooms.filter((x) => x !== payload.roomId);
+          });
+          break;
+
+        default:
+          break;
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
 });

@@ -22,7 +22,7 @@ export default function Signin() {
   const onSubmitHandle = async (data: Inputs) => {
     const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, data);
     localStorage.setItem("token", res.data.token);
-    router.push("/dashboard");
+    router.push("/drawingBoard");
   };
 
   return (

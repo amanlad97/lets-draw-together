@@ -4,6 +4,7 @@ import { Game } from "./game";
 import { connectWebSocket } from "./websocket";
 import { ShapeType } from "./types";
 import { LoadingSpinner } from "@repo/ui/loadingSpinner";
+import { useRouter } from "next/navigation";
 
 const ToolButtons = ({ activeShape, setActiveShape }: ToolButtonsProps) => {
   const tools: ShapeType[] = ["pencil", "rectangle", "circle"];
@@ -31,7 +32,11 @@ const Dashboard = () => {
   const gameRef = useRef<Game | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeShape, setActiveShape] = useState<ShapeType>("rectangle");
+  const route = useRouter();
   useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      route.push("/signin");
+    }
     const canvas = drawing.current;
     if (!canvas) return;
 
@@ -63,8 +68,13 @@ const Dashboard = () => {
       ws.close();
       game.destroy();
     };
-  });
+  }, []);
 
+  useEffect(() => {
+    if (gameRef.current) {
+      gameRef.current.selectShape(activeShape);
+    }
+  }, [activeShape]);
   useEffect(() => {
     if (gameRef.current) {
       gameRef.current.selectShape(activeShape);
