@@ -1,7 +1,7 @@
 import { type JSX } from "react";
 import { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
-interface LoginTextBoxProps extends UseFormRegisterReturn {
+type LoginTextBoxProps = UseFormRegisterReturn & {
   type: "password" | "text";
   placeholder: string;
   min?: string | number;
@@ -9,7 +9,7 @@ interface LoginTextBoxProps extends UseFormRegisterReturn {
   disabled?: boolean;
   className?: string;
   error?: FieldError | undefined;
-}
+};
 
 export const CredentialText = ({
   className = "",

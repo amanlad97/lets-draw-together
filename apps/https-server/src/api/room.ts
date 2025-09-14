@@ -3,44 +3,38 @@ import { prismaClient } from "@repo/db/prisma";
 import { Router } from "express";
 
 export const room: Router = Router();
-
 room.post("/makeRoom", async (req, res) => {
-  const userId = req.id;
-  const parsedBody = CreateRoomSchema.safeParse(req.body);
-  if (!parsedBody.success || !userId) {
-    res.json({
-      ok: false,
-      message: "incorrect input ",
-    });
-    return;
-  }
-  const test = await prismaClient.room.findFirst({
-    where: {
-      slug: parsedBody.data.slug,
-    },
-  });
+  try {
+    const userId = req.id;
+    const parsedBody = CreateRoomSchema.safeParse(req.body);
 
-  if (test) {
-    return res.json({
-      ok: false,
-      message: "room already exists",
-    });
-  }
+    if (!parsedBody.success || !userId) {
+      return res.json({ ok: false, message: "incorrect input" });
+    }
 
-  const roomCreated = prismaClient.room
-    .create({
+    const existing = await prismaClient.room.findFirst({
+      where: { slug: parsedBody.data.slug },
+    });
+
+    if (existing) {
+      return res.json({ ok: false, message: "room already exists" });
+    }
+
+    const roomCreated = await prismaClient.room.create({
       data: {
         slug: parsedBody.data.slug,
         adminID: userId,
       },
-    })
-    .then((e) => {
-      console.error(e);
+      select: { id: true },
     });
-  res.json({
-    ok: true,
-    roomCreated,
-  });
+
+    return res.json({ ok: true, room: roomCreated });
+  } catch (err) {
+    console.error("Error creating room:", err);
+    return res
+      .status(500)
+      .json({ ok: false, message: "internal server error" });
+  }
 });
 
 room.get("/joinRoom", async (req, res) => {
@@ -63,10 +57,6 @@ room.get("/joinRoom", async (req, res) => {
 
 room.get("/chats", async (req, res) => {
   const roomId = req.query.roomId || "";
-  console.log(
-    typeof roomId,
-    "heloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo"
-  );
   if (typeof roomId !== "string") {
     return res.json({ ok: false, message: "incorrect roomId format" });
   }

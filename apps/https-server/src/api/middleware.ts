@@ -6,7 +6,7 @@ export const middleware: Router = Router();
 
 middleware.use((req, res, next) => {
   const token = req.headers["token"];
-
+  console.log(req, token);
   if (!token || Array.isArray(token)) {
     return res.status(401).json({
       ok: false,

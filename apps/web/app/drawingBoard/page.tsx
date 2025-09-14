@@ -10,7 +10,9 @@ const ToolButtons = ({ activeShape, setActiveShape }: ToolButtonsProps) => {
   const tools: ShapeType[] = ["pencil", "rectangle", "circle"];
 
   return (
-    <div className="grid grid-cols-3 ">
+    <div className="grid grid-cols-4 bg-gray-500">
+      <div className="py-2 px-10 rounded-rb-xl text-black">werty</div>
+
       {tools.map((tool) => (
         <button
           key={tool}
@@ -18,7 +20,7 @@ const ToolButtons = ({ activeShape, setActiveShape }: ToolButtonsProps) => {
           className={`px-4 py-2 ${
             activeShape === tool
               ? "bg-amber-50 text-black rounded-2xl"
-              : "text-white bg-black"
+              : "text-white"
           }`}
         >
           {tool}
@@ -36,6 +38,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       route.push("/signin");
+      return;
     }
     const canvas = drawing.current;
     if (!canvas) return;
@@ -60,7 +63,7 @@ const Dashboard = () => {
         drawing.current.height = window.innerHeight;
       }
     };
-    console.log(loading);
+
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -68,21 +71,15 @@ const Dashboard = () => {
       ws.close();
       game.destroy();
     };
-  }, []);
+  }, [route]);
 
   useEffect(() => {
     if (gameRef.current) {
       gameRef.current.selectShape(activeShape);
     }
   }, [activeShape]);
-  useEffect(() => {
-    if (gameRef.current) {
-      gameRef.current.selectShape(activeShape);
-    }
-  }, [activeShape]);
-
   return (
-    <div>
+    <div className="bg-black">
       {loading && <LoadingSpinner />}
       <ToolButtons activeShape={activeShape} setActiveShape={setActiveShape} />
       <canvas ref={drawing} className="w-screen h-screen"></canvas>

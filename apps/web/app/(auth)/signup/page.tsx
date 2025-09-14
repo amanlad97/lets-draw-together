@@ -20,9 +20,7 @@ export default function Signup() {
   } = useForm<Inputs>();
 
   const onSubmitHandle = async (data: Inputs) => {
-    const res = await axios.post(`${BACKEND_URL}/v1/security/signup`, data, {
-      withCredentials: true,
-    });
+    const res = await axios.post(`${BACKEND_URL}/v1/security/signup`, data, {});
     console.log(res);
   };
   return (
