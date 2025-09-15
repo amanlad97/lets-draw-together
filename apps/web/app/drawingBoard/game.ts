@@ -18,6 +18,7 @@ export class Game {
     this.ctx = canvas.getContext("2d")!;
     this.roomId = roomId;
     this.socket = ws;
+    console.log("here we start");
     this.final = this.init();
     this.initHandler();
     this.initMouseHandlers();
@@ -32,8 +33,10 @@ export class Game {
 
   private async init() {
     try {
+      console.log("start of init");
       this.existingShapes = (await getExistingShapes(this.roomId)) || [];
       this.clear();
+      console.log("init done");
     } catch (error) {
       console.error("Failed to load existing shapes:", error);
     }

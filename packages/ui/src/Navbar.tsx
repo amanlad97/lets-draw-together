@@ -1,3 +1,8 @@
 export const Navbar = () => {
-  return <div className="w-screen bg-grey"></div>;
+  return (
+    <div className=" flex justify-between w-auto h-16 backdrop-blur-md bg-gray-600">
+      <span>login</span>
+      <span>room</span>
+    </div>
+  );
 };

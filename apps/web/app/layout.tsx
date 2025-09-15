@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@repo/ui/Navbar";
+import { Navbar } from "@repo/ui/Navbar";
 
 export const metadata: Metadata = {
   title: "let's draw together",
@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-black overflow-hidden">
         <Navbar />
         {children}
       </body>
