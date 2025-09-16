@@ -1,6 +1,6 @@
 import axios from "axios";
-import { BACKEND_URL } from "../config";
-import { Shape } from "./types";
+import { BACKEND_URL } from "@repo/common/utils";
+import { Shape } from "@repo/common/shapeTypes";
 
 export const getExistingShapes = async (
   roomId: number

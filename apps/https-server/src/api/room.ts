@@ -1,4 +1,4 @@
-import { CreateRoomSchema } from "@repo/common/types";
+import { CreateRoomSchema } from "@repo/common/zodTypes";
 import { prismaClient } from "@repo/db/prisma";
 import { Router } from "express";
 

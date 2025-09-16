@@ -4,17 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build":"tsc -b ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "exports":{
-    "./types":"./src/types.ts"
-  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*"
   },
+"exports": {
+  "./game": "./dist/game.js",
+  "./shapeTypes": "./dist/shapeTypes.js",
+  "./zodTypes": "./dist/zodTypes.js",
+  "./utils": "./dist/utils.js"
+},
   "dependencies": {
     "zod": "^4.0.17"
   }

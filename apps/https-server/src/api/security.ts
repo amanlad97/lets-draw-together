@@ -2,7 +2,7 @@ import { Router } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { JWT_KEY } from "@repo/backend-common/config";
-import { CreateUserSchema, SignInSchema } from "@repo/common/types";
+import { CreateUserSchema, SignInSchema } from "@repo/common/zodTypes";
 import { prismaClient } from "@repo/db/prisma";
 
 const jwtKey = JWT_KEY;
