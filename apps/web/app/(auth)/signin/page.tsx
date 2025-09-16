@@ -4,7 +4,7 @@ import { CredentialText } from "@repo/ui/CredentialText";
 import axios from "axios";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { BACKEND_URL } from "../../config";
+import { BACKEND_URL } from "@repo/common/utils";
 import { useRouter } from "next/navigation";
 
 type Inputs = {
