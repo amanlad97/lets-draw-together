@@ -1,5 +1,5 @@
-import { getExistingShapes } from "./https";
-import { Shape, ShapeType } from "./types";
+// import { getExistingShapes } from "../../../apps/web/app/drawingBoard/https";
+import { Shape, ShapeType } from "./shapeTypes";
 
 export class Game {
   private existingShapes: Shape[] = [];
@@ -13,13 +13,18 @@ export class Game {
   private pencilPoints: { x: number; y: number }[] = [];
   private shape: ShapeType = "circle";
   final: Promise<void>;
-  constructor(canvas: HTMLCanvasElement, roomId: number, ws: WebSocket) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    roomId: number,
+    ws: WebSocket,
+    getExistingShapes: (arg0: number) => Promise<Shape[] | null>
+  ) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d")!;
     this.roomId = roomId;
     this.socket = ws;
     console.log("here we start");
-    this.final = this.init();
+    this.final = this.init(getExistingShapes);
     this.initHandler();
     this.initMouseHandlers();
     this.clear();
@@ -31,15 +36,18 @@ export class Game {
     this.canvas.removeEventListener("pointermove", this.pointermove);
   }
 
-  private async init() {
+  private async init(
+    getExistingShapes: (arg0: number) => Promise<Shape[] | null>
+  ) {
     try {
-      console.log("start of init");
       this.existingShapes = (await getExistingShapes(this.roomId)) || [];
       this.clear();
-      console.log("init done");
     } catch (error) {
       console.error("Failed to load existing shapes:", error);
     }
+  }
+  func(roomId: number): Shape[] | PromiseLike<Shape[]> {
+    throw new Error("Method not implemented.");
   }
 
   private initHandler() {
