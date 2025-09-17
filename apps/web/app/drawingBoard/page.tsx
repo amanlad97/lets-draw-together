@@ -27,8 +27,8 @@ const Dashboard = () => {
       setLoading(false);
     });
 
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     return () => {
       ws.close();
@@ -38,25 +38,26 @@ const Dashboard = () => {
 
   useEffect(() => {
     const handleResize = () => {
+      if (!localStorage.getItem("token")) {
+        router.push("/signin");
+        return;
+      }
       const canvas = drawingRef.current;
       if (canvas) {
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
       }
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+//need to fix this 
+  }, );
 
-  if (!localStorage.getItem("token")) {
-    router.push("/signin");
-    return;
-  }
   return (
-    <div className="flex flex-col h-full bg-black overflow-hidden">
+    <div className="flex flex-col h-full w-full bg-black overflow-hidden">
       {loading && <LoadingSpinner />}
       <ToolButtons gameRef={gameRef} />
-      <canvas ref={drawingRef} className="flex-1" />
+      <canvas ref={drawingRef} className="flex-1"></canvas>
     </div>
   );
 };

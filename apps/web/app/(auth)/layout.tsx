@@ -1,16 +1,19 @@
-const layout = ({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) => {
+import React from "react";
+
+const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="bg-black  w-screen h-screen flex item-center justify-center">
-      <div className=" flex flex-col justify-center items-center">
-        <div className="bg-gray-900 text-white w-md flex rounded-xl p-8 flex-col items-center shadow-2xl">
-          {children}
-        </div>
-      </div>
+    <div className="min-h-screen w-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-6">
+      <main
+        className="relative max-w-md w-full rounded-2xl
+                   bg-gray-800/70 backdrop-blur-md text-white
+                   shadow-[0_8px_30px_rgba(0,0,0,0.6)]
+                   p-10 flex flex-col items-center gap-6
+                   border border-gray-700/40"
+      >
+        {children}
+      </main>
     </div>
   );
 };
-export default layout;
+
+export default Layout;
