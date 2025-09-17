@@ -8,7 +8,7 @@ export const Navbar = () => {
                     text-white shadow-md"
     >
       <div className="font-semibol padding 1rem bg-gray-900/70 ">
-        Let's Draw together
+        Lets Draw together
       </div>
       <a href="#" className="font-semibold hover:text-amber-300 transition">
         Room

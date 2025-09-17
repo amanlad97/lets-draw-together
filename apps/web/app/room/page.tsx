@@ -1,8 +1,8 @@
 "use client";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { BACKEND_URL } from "../config";
 import { useRouter } from "next/navigation";
+import { BACKEND_URL } from "@repo/common/utils";
 
 const Room = () => {
   const router = useRouter();
@@ -27,7 +27,8 @@ const Room = () => {
         { slug: inputRef.current?.value },
         { headers: { token } }
       );
-      console.log("Room created:", res.data);
+      //TODO-logic needs to be added
+      console.log("Room", res.data);
     } catch (err) {
       console.error("Error creating room:", err);
     }

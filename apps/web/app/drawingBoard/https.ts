@@ -31,7 +31,6 @@ export const getExistingShapes = async (
         return null;
       }
     });
-    console.log("Fetched shapes:", shapes);
     return shapes;
   } catch (error) {
     console.error("Error fetching shapes:", error);

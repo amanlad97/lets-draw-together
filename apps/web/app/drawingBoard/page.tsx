@@ -22,7 +22,6 @@ const Dashboard = () => {
     gameRef.current = game;
 
     game.final.finally(() => {
-      console.log("loaded");
       game.selectShape("rectangle");
       setLoading(false);
     });
@@ -50,8 +49,8 @@ const Dashboard = () => {
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-//need to fix this 
-  }, );
+    //need to fix this
+  });
 
   return (
     <div className="flex flex-col h-full w-full bg-black overflow-hidden">

@@ -23,7 +23,6 @@ export class Game {
     this.ctx = canvas.getContext("2d")!;
     this.roomId = roomId;
     this.socket = ws;
-    console.log("here we start");
     this.final = this.init(getExistingShapes);
     this.initHandler();
     this.initMouseHandlers();
@@ -82,7 +81,6 @@ export class Game {
 
   private clear = () => {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    console.log(this.existingShapes);
     this.existingShapes.forEach((shape) => {
       this.ctx.strokeStyle = "#ffffff";
       this.ctx.lineWidth = 2;

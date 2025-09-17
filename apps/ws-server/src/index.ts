@@ -41,10 +41,8 @@ wss.on("connection", function connection(ws, request) {
               message: payload.message,
             },
           });
-          console.log(users, payload);
           users.forEach((user) => {
             if (user.rooms.includes(payload.roomId)) {
-              console.log(user, payload);
               user.ws.send(
                 JSON.stringify({
                   message: payload.message,

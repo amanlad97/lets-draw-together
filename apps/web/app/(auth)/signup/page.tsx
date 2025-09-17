@@ -22,6 +22,7 @@ export default function Signup() {
 
   const onSubmitHandle = async (data: Inputs) => {
     const res = await axios.post(`${BACKEND_URL}/v1/security/signup`, data);
+    //TODO-logic needs to be added
     console.log(res);
   };
   return (
