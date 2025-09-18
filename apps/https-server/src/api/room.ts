@@ -17,7 +17,8 @@ room.post("/makeRoom", async (req, res) => {
     });
 
     if (existing) {
-      return res.json({ ok: false, message: "room already exists" });
+      res.json({ ok: false, message: "room already exists" }).status(409);
+      return;
     }
 
     const roomCreated = await prismaClient.room.create({
@@ -37,7 +38,7 @@ room.post("/makeRoom", async (req, res) => {
   }
 });
 
-room.get("/joinRoom", async (req, res) => {
+room.post("/joinRoom", async (req, res) => {
   const roomSlug = req.query.room;
 
   if (typeof roomSlug !== "string") return;

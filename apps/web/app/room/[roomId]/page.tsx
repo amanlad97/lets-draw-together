@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { connectWebSocket } from "./websocket";
 import { LoadingSpinner } from "@repo/ui/loadingSpinner";
 import { useRouter } from "next/navigation";
@@ -7,7 +7,8 @@ import ToolButtons from "@repo/ui/ToolButton";
 import { getExistingShapes } from "./https";
 import { Game } from "@repo/common/game";
 
-const Dashboard = () => {
+const Dashboard = (props: PageProps<"/room/[roomId]">) => {
+  const { roomId } = use(props.params);
   const drawingRef = useRef<HTMLCanvasElement>(null);
   const gameRef = useRef<Game | null>(null);
   const [loading, setLoading] = useState(true);
@@ -17,14 +18,12 @@ const Dashboard = () => {
     const canvas = drawingRef.current;
     if (!canvas) return;
     canvas.style.background = "black";
-    const ws = connectWebSocket(12);
-    const game = new Game(canvas, 12, ws, getExistingShapes);
+    const ws = connectWebSocket(parseInt(roomId));
+    const game = new Game(canvas, parseInt(roomId), ws, getExistingShapes);
     gameRef.current = game;
 
-    game.final.finally(() => {
-      game.selectShape("rectangle");
-      setLoading(false);
-    });
+    game.selectShape("rectangle");
+    setLoading(false);
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -33,7 +32,7 @@ const Dashboard = () => {
       ws.close();
       game.destroy();
     };
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -49,8 +48,7 @@ const Dashboard = () => {
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-    //need to fix this
-  });
+  }, [router]);
 
   return (
     <div className="flex flex-col h-full w-full bg-black overflow-hidden">

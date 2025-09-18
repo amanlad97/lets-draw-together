@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { BACKEND_URL } from "@repo/common/utils";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Inputs = {
   username: string;
@@ -19,11 +20,19 @@ export default function Signup() {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
+  const Router = useRouter();
 
   const onSubmitHandle = async (data: Inputs) => {
-    const res = await axios.post(`${BACKEND_URL}/v1/security/signup`, data);
-    //TODO-logic needs to be added
-    console.log(res);
+    try {
+      const res = await axios.post(`${BACKEND_URL}/v1/security/signup`, data);
+      if (res.data.ok) {
+        return Router.push("/signin");
+      } else {
+        alert("Oops something went wrong");
+      }
+    } catch (error) {
+      alert(`Oops something went wrong: ${error}`);
+    }
   };
   return (
     <div className="flex flex-col items-center text-center w-full max-w-sm mx-auto">

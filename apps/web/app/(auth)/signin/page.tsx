@@ -23,10 +23,14 @@ export default function Signin() {
   const router = useRouter();
 
   const onSubmitHandle = async (data: Inputs) => {
-    const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, data);
-    axios.defaults.headers.common["token"] = res.data.token;
-    localStorage.setItem("token", res.data.token);
-    router.push("/drawingBoard");
+    try {
+      const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, data);
+      axios.defaults.headers.common["token"] = res.data.token;
+      localStorage.setItem("token", res.data.token);
+      router.push("/drawingBoard");
+    } catch (error) {
+      alert(`Oops something went wrong: ${error}`);
+    }
   };
 
   return (
@@ -82,7 +86,7 @@ export default function Signin() {
       </form>
 
       <p className="mt-6 text-gray-400">
-        Don’t have an account?{" "}
+        Dont have an account?{" "}
         <Link className="underline hover:text-amber-300" href="/signup">
           Sign up
         </Link>

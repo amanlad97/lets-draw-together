@@ -11,7 +11,7 @@ export const Navbar = () => {
         Lets Draw together
       </div>
       <a href="#" className="font-semibold hover:text-amber-300 transition">
-        Room
+        Logout
       </a>
     </nav>
   );
