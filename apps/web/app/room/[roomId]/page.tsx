@@ -1,6 +1,6 @@
 "use client";
 import { use, useEffect, useRef, useState } from "react";
-import { connectWebSocket } from "./websocket";
+import { connectWebSocket } from "../../hooks/websocket";
 import { LoadingSpinner } from "@repo/ui/loadingSpinner";
 import { useRouter } from "next/navigation";
 import ToolButtons from "@repo/ui/ToolButton";
