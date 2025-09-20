@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts":{
     "prisma:generate": "prisma generate",
-    "build": "tsc -b " 
+    "build": "pnpm prisma:generate && tsc -b"
   },"exports":{
-    "./prisma":"./src/index.ts"
+    "./prisma":"./dist/index.js"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
@@ -18,6 +18,6 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "6.14.0",
-    "prima": "^0.0.1"
+    "prisma": "^0.0.1"
   }
 }
