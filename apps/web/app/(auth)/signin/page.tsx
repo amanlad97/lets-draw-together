@@ -23,9 +23,9 @@ export default function Signin() {
   const router = useRouter();
 
   const onSubmitHandle = async (data: Inputs) => {
+    "use server";
     try {
       const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, data);
-      axios.defaults.headers.common["token"] = res.data.token;
       localStorage.setItem("token", res.data.token);
       router.push("/room");
     } catch (error) {
