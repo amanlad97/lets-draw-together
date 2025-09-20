@@ -16,7 +16,7 @@ security.post("/signin", async (req, res) => {
 
   const user = await prismaClient.user.findFirst({
     where: { username: data.data.username },
-    select: { id: true, password: true },
+    select: { id: true, password: true, name: true },
   });
 
   if (!user) {
@@ -33,7 +33,7 @@ security.post("/signin", async (req, res) => {
 
   const token = jwt.sign({ id: user.id }, jwtKey, { expiresIn: "1d" });
 
-  res.json({ message: "signin successfull", token });
+  res.json({ message: "signin successfull", token, name: user.name });
 });
 
 security.post("/signup", async (req, res) => {

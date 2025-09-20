@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const useResize = () => {
+export const UseResize = () => {
   const [size, setSize] = useState({
     width: typeof window !== "undefined" ? window.innerWidth : 0,
     height: typeof window !== "undefined" ? window.innerHeight : 0,

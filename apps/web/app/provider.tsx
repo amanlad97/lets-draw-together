@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, ReactNode, useReducer } from "react";
+import { createContext, Dispatch, ReactNode, useReducer } from "react";
 
 interface stateType {
   user: null | {
@@ -28,8 +28,8 @@ const reduceFunction = (prev: stateType, action: Action): stateType => {
   }
 };
 
-const user = createContext<{
-  dispatch: React.Dispatch<Action>;
+export const User = createContext<{
+  dispatch: Dispatch<Action>;
   state: stateType;
 } | null>(null);
 
@@ -38,5 +38,5 @@ export const UserContext = ({ children }: { children: ReactNode }) => {
     user: null,
     rooms: null,
   });
-  return <user.Provider value={{ state, dispatch }}>{children}</user.Provider>;
+  return <User value={{ state, dispatch }}>{children}</User>;
 };

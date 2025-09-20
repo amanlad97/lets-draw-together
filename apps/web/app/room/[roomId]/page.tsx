@@ -1,46 +1,49 @@
 "use client";
-import { use, useEffect, useRef, useState } from "react";
-import { connectWebSocket } from "../../hooks/websocket";
+import { use, useContext, useEffect, useRef, useState } from "react";
 import { LoadingSpinner } from "@repo/ui/loadingSpinner";
 import { useRouter } from "next/navigation";
 import ToolButtons from "@repo/ui/ToolButton";
 import { getExistingShapes } from "./https";
 import { Game } from "@repo/common/game";
-import { useResize } from "../../hooks/useResize";
+import { UseResize } from "../../hooks/useResize";
+import { User } from "../../provider";
 
 const Dashboard = (props: PageProps<"/room/[roomId]">) => {
-  const { roomId } = use(props.params);
   const drawingRef = useRef<HTMLCanvasElement>(null);
   const gameRef = useRef<Game | null>(null);
   const [loading, setLoading] = useState(true);
-  const size = useResize();
+  const { roomId } = use(props.params);
+  const { state } = useContext(User) || {
+    state: null,
+  };
+  const size = UseResize();
   const router = useRouter();
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      router.push("/signin");
+    const canvas = drawingRef.current;
+    const ws = state?.rooms?.[roomId];
+
+    if (!ws) {
+      router.push("/room");
       return;
     }
-    const canvas = drawingRef.current;
+    if (canvas) {
+      canvas.width = size.width;
+      canvas.height = size.height;
+      canvas.style.background = "black";
 
-    if (!canvas) return;
-    canvas.width = size.width;
-    canvas.height = size.height;
-    canvas.style.background = "black";
+      const game = new Game(canvas, parseInt(roomId), ws, getExistingShapes);
 
-    const ws = connectWebSocket(parseInt(roomId));
-    console.log(ws);
-    const game = new Game(canvas, parseInt(roomId), ws, getExistingShapes);
+      gameRef.current = game;
+      game.selectShape("rectangle");
+      setLoading(false);
 
-    gameRef.current = game;
-    game.selectShape("rectangle");
-    setLoading(false);
-
-    return () => {
-      ws.close();
-      game.destroy();
-    };
-  }, [roomId, router, size]);
+      return () => {
+        ws.close();
+        game.destroy();
+      };
+    }
+  }, [roomId, router, size, state]);
 
   return (
     <div className="flex flex-col h-full w-full bg-black overflow-hidden">
