@@ -1,4 +1,10 @@
+"use client";
+
 export const Navbar = () => {
+  const clearData = () => {
+    localStorage.clear();
+    return;
+  };
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50 
@@ -10,9 +16,12 @@ export const Navbar = () => {
       <div className="font-semibol padding 1rem bg-gray-900/70 ">
         Lets Draw together
       </div>
-      <a href="#" className="font-semibold hover:text-amber-300 transition">
+      <button
+        onClick={clearData}
+        className="font-semibold hover:text-amber-300 transition"
+      >
         Logout
-      </a>
+      </button>
     </nav>
   );
 };

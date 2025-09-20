@@ -27,7 +27,7 @@ export default function Signin() {
       const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, data);
       axios.defaults.headers.common["token"] = res.data.token;
       localStorage.setItem("token", res.data.token);
-      router.push("/drawingBoard");
+      router.push("/room");
     } catch (error) {
       alert(`Oops something went wrong: ${error}`);
     }
