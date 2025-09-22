@@ -1,9 +1,13 @@
 "use client";
 
+import { UseUser } from "../hooks/UseUser";
+
 export const Navbar = () => {
-  const clearData = () => {
-    localStorage.clear();
-    return;
+  const { state, dispatch } = UseUser();
+  const logout = () => {
+    dispatch({
+      type: "CLEAR_USER",
+    });
   };
   return (
     <nav
@@ -17,8 +21,8 @@ export const Navbar = () => {
         Lets Draw together
       </div>
       <button
-        onClick={clearData}
         className="font-semibold hover:text-amber-300 transition"
+        onClick={logout}
       >
         Logout
       </button>

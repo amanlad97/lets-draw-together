@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { BACKEND_URL } from "@repo/common/utils";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
-import { UseUser } from "../../provider";
+import { UseUser } from "../../hooks/UseUser";
 
 type Inputs = {
   username: string;

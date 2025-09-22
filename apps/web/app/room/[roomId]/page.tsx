@@ -6,7 +6,7 @@ import ToolButtons from "@repo/ui/ToolButton";
 import { getExistingShapes } from "./https";
 import { Game } from "@repo/common/game";
 import { UseResize } from "../../hooks/useResize";
-import { UseUser } from "../../provider";
+import { UseUser } from "../../hooks/UseUser";
 
 const Dashboard = (props: PageProps<"/room/[roomId]">) => {
   const drawingRef = useRef<HTMLCanvasElement>(null);

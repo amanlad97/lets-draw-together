@@ -8,12 +8,14 @@ import {
   useReducer,
 } from "react";
 
-interface stateType {
-  user: null | {
-    token: string;
-    name: string;
-  };
-  rooms: null | Record<string, WebSocket>;
+export interface stateType {
+  user:
+    | undefined
+    | {
+        token: string;
+        name: string;
+      };
+  rooms: undefined | Record<string, WebSocket>;
 }
 
 type Action =
@@ -28,13 +30,13 @@ const reduceFunction = (prev: stateType, action: Action): stateType => {
     case "SET_ROOMS":
       return { ...prev, rooms: action.payload };
     case "CLEAR_USER":
-      return { user: null, rooms: null };
+      return { user: undefined, rooms: undefined };
     default:
       return prev;
   }
 };
 
-const User = createContext<
+export const User = createContext<
   | {
       dispatch: Dispatch<Action>;
       state: stateType;
@@ -42,18 +44,10 @@ const User = createContext<
   | undefined
 >(undefined);
 
-export const UseUser = () => {
-  const ctx = useContext(User);
-  if (!ctx) {
-    throw new Error("context is undefined");
-  }
-  return ctx;
-};
-
 export const UserContext = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(reduceFunction, {
-    user: null,
-    rooms: null,
+    user: undefined,
+    rooms: undefined,
   });
   return <User value={{ state, dispatch }}>{children}</User>;
 };

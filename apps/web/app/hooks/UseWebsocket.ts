@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import { WEBSOCKET_URL } from "@repo/common/utils";
-import { User, UseUser } from "../provider";
+import { UseUser } from "./UseUser";
 
 export default function useConnectWebSocket(roomId: number | null) {
   const { state, dispatch } = UseUser();
