@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, Dispatch, ReactNode, useReducer } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  useContext,
+  useReducer,
+} from "react";
 
 interface stateType {
   user: null | {
@@ -28,10 +34,21 @@ const reduceFunction = (prev: stateType, action: Action): stateType => {
   }
 };
 
-export const User = createContext<{
-  dispatch: Dispatch<Action>;
-  state: stateType;
-} | null>(null);
+const User = createContext<
+  | {
+      dispatch: Dispatch<Action>;
+      state: stateType;
+    }
+  | undefined
+>(undefined);
+
+export const UseUser = () => {
+  const ctx = useContext(User);
+  if (!ctx) {
+    throw new Error("context is undefined");
+  }
+  return ctx;
+};
 
 export const UserContext = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(reduceFunction, {
