@@ -6,23 +6,20 @@ import ToolButtons from "@repo/ui/ToolButton";
 import { getExistingShapes } from "./https";
 import { Game } from "@repo/common/game";
 import { UseResize } from "../../hooks/useResize";
-import { User } from "../../provider";
+import { UseUser } from "../../hooks/UseUser";
 
 const Dashboard = (props: PageProps<"/room/[roomId]">) => {
   const drawingRef = useRef<HTMLCanvasElement>(null);
   const gameRef = useRef<Game | null>(null);
   const [loading, setLoading] = useState(true);
   const { roomId } = use(props.params);
-  const { state } = useContext(User) || {
-    state: null,
-  };
+  const { state } = UseUser();
   const size = UseResize();
   const router = useRouter();
 
   useEffect(() => {
     const canvas = drawingRef.current;
-    const ws = state?.rooms?.[roomId];
-
+    const ws = state.rooms?.[roomId];
     if (!ws) {
       router.push("/room");
       return;

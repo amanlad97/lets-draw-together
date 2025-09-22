@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts":{
+  "scripts": {
     "prisma:generate": "prisma generate",
     "build": "pnpm prisma:generate && tsc -b"
-  },"exports":{
-    "./prisma":"./dist/index.js"
+  },
+  "exports": {
+    "./prisma": "./dist/index.js"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
@@ -18,6 +19,6 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "6.14.0",
-    "prisma": "^0.0.1"
+    "prisma": "^6.16.2"
   }
 }

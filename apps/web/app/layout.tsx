@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Navbar } from "@repo/ui/Navbar";
-import { UserContext } from "./provider";
+import { Navbar } from "./components/Navbar";
+import { UserContext } from "./provider/provider";
 
 export const metadata: Metadata = {
   title: "let's draw together",
