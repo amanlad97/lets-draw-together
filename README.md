@@ -23,119 +23,21 @@ A full-featured collaborative drawing web app, built with a modern Turborepo mon
 ---
 
 ## Repository Structure
-
+<pre> <code>
 Directory structure:
-└── amanlad97-lets-draw-together/
-    ├── README.md
-    ├── package.json
-    ├── pnpm-workspace.yaml
-    ├── turbo.json
-    ├── .npmrc
-    ├── apps/
-    │   ├── https-server/
-    │   │   ├── package.json
-    │   │   ├── tsconfig.json
-    │   │   ├── tsconfig.tsbuildinfo
-    │   │   └── src/
-    │   │       ├── index.ts
-    │   │       ├── api/
-    │   │       │   ├── middleware.ts
-    │   │       │   ├── room.ts
-    │   │       │   └── security.ts
-    │   │       └── types/
-    │   │           └── index.d.ts
-    │   ├── web/
-    │   │   ├── README.md
-    │   │   ├── eslint.config.js
-    │   │   ├── next.config.js
-    │   │   ├── package.json
-    │   │   ├── postcss.config.js
-    │   │   ├── tsconfig.json
-    │   │   └── app/
-    │   │       ├── globals.css
-    │   │       ├── layout.tsx
-    │   │       ├── not-found.tsx
-    │   │       ├── page.module.css
-    │   │       ├── provider.tsx
-    │   │       ├── (auth)/
-    │   │       │   ├── layout.tsx
-    │   │       │   ├── signin/
-    │   │       │   │   └── page.tsx
-    │   │       │   └── signup/
-    │   │       │       └── page.tsx
-    │   │       ├── hooks/
-    │   │       │   ├── useResize.ts
-    │   │       │   └── UseWebsocket.ts
-    │   │       └── room/
-    │   │           ├── page.tsx
-    │   │           └── [roomId]/
-    │   │               ├── https.ts
-    │   │               └── page.tsx
-    │   └── ws-server/
-    │       ├── package.json
-    │       ├── tsconfig.json
-    │       ├── tsconfig.tsbuildinfo
-    │       └── src/
-    │           └── index.ts
-    └── packages/
-        ├── backend-common/
-        │   ├── package.json
-        │   ├── tsconfig.json
-        │   └── src/
-        │       └── index.ts
-        ├── common/
-        │   ├── package.json
-        │   ├── tsconfig.json
-        │   ├── tsconfig.tsbuildinfo
-        │   └── src/
-        │       ├── game.ts
-        │       ├── shapeTypes.ts
-        │       ├── utils.ts
-        │       └── zodTypes.ts
-        ├── db/
-        │   ├── package.json
-        │   ├── tsconfig.json
-        │   ├── prisma/
-        │   │   ├── schema.prisma
-        │   │   └── migrations/
-        │   │       ├── migration_lock.toml
-        │   │       ├── 20250821091932_init/
-        │   │       │   └── migration.sql
-        │   │       ├── 20250821120224_rename_email/
-        │   │       │   └── migration.sql
-        │   │       └── 20250823171711_minor_changes/
-        │   │           └── migration.sql
-        │   └── src/
-        │       └── index.ts
-        ├── eslint-config/
-        │   ├── README.md
-        │   ├── base.js
-        │   ├── next.js
-        │   ├── package.json
-        │   └── react-internal.js
-        ├── tailwind-config/
-        │   ├── package.json
-        │   ├── postcss.config.js
-        │   └── shared-styles.css
-        ├── typescript-config/
-        │   ├── base.json
-        │   ├── nextjs.json
-        │   ├── package.json
-        │   └── react-library.json
-        └── ui/
-            ├── eslint.config.mjs
-            ├── package.json
-            ├── postcss.config.js
-            ├── tsconfig.json
-            ├── turbo.json
-            └── src/
-                ├── CredentialButton.tsx
-                ├── CredentialText.tsx
-                ├── LoadingSpinner.tsx
-                ├── Navbar.tsx
-                ├── styles.css
-                └── ToolButton.tsx
+/apps
+├── web # Next.js frontend app
+├── https-server # Express backend with APIs and websockets
+└── ws-server # WebSocket backend
 
+/packages
+├── common # Shared types, game logic, Zod schemas, utilities
+├── db # Prisma schema, migrations, client
+├── ui # Shared React UI components
+├── tailwind-config # Shared Tailwind styles/config
+├── eslint-config # Shared linting config
+└── typescript-config# Shared tsconfig files
+ </code> </pre>
 ---
 
 ## Features
