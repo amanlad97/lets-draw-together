@@ -153,27 +153,20 @@ Directory structure:
 
 ### Installation
 
-git clone https://github.com/amanlad97/lets-draw-together.git
+git clone <https://github.com/amanlad97/lets-draw-together.git>
 cd lets-draw-together
 pnpm install
-
-
 
 ### Local Development
 
 pnpm exec turbo dev
 
-
 Or run a specific app:
 pnpm exec turbo dev --filter=web
-
-
 
 ### Build for Production
 
 pnpm exec turbo build
-
-
 
 ---
 
@@ -183,8 +176,6 @@ pnpm exec turbo build
 2. Run Prisma migrations:
 pnpm prisma generate
 pnpm prisma migrate deploy
-
-
 
 ---
 
