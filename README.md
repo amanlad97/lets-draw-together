@@ -1,135 +1,207 @@
-# Turborepo starter
 
-This Turborepo starter is maintained by the Turborepo core team.
+# lets-draw-together
 
-## Using this example
+A full-featured collaborative drawing web app, built with a modern Turborepo monorepo architecture. This project lets multiple users collaborate on real-time drawing canvases across rooms, offering seamless experiences through a Next.js frontend, robust Node.js and WebSocket-based backend, and a PostgreSQL database managed via Prisma.
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
-```
+## Description
 
-## What's inside?
+**lets-draw-together** provides real-time, multi-user collaborative drawing using a scalable and maintainable monorepo setup. It features secure user authentication, persistent chat and drawing history, responsive UI, and shared utilities/components, making it both a perfect foundation for further development and a solid demonstration of best practices in modern full-stack Typescript apps.
 
-This Turborepo includes the following packages/apps:
+---
 
-### Apps and Packages
+## Requirements
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- **Node.js** (v18 or above)  
+- **pnpm** (v7 or above)  
+- **PostgreSQL** for backend data persistence  
+- **Prisma CLI** for ORM migrations and schema sync  
+- (Optional) **Vercel** account for deployment  
+- (Optional) **Docker** for local database setup
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+---
 
-### Utilities
+## Repository Structure
 
-This Turborepo has some additional tools already setup for you:
+Directory structure:
+└── amanlad97-lets-draw-together/
+    ├── README.md
+    ├── package.json
+    ├── pnpm-workspace.yaml
+    ├── turbo.json
+    ├── .npmrc
+    ├── apps/
+    │   ├── https-server/
+    │   │   ├── package.json
+    │   │   ├── tsconfig.json
+    │   │   ├── tsconfig.tsbuildinfo
+    │   │   └── src/
+    │   │       ├── index.ts
+    │   │       ├── api/
+    │   │       │   ├── middleware.ts
+    │   │       │   ├── room.ts
+    │   │       │   └── security.ts
+    │   │       └── types/
+    │   │           └── index.d.ts
+    │   ├── web/
+    │   │   ├── README.md
+    │   │   ├── eslint.config.js
+    │   │   ├── next.config.js
+    │   │   ├── package.json
+    │   │   ├── postcss.config.js
+    │   │   ├── tsconfig.json
+    │   │   └── app/
+    │   │       ├── globals.css
+    │   │       ├── layout.tsx
+    │   │       ├── not-found.tsx
+    │   │       ├── page.module.css
+    │   │       ├── provider.tsx
+    │   │       ├── (auth)/
+    │   │       │   ├── layout.tsx
+    │   │       │   ├── signin/
+    │   │       │   │   └── page.tsx
+    │   │       │   └── signup/
+    │   │       │       └── page.tsx
+    │   │       ├── hooks/
+    │   │       │   ├── useResize.ts
+    │   │       │   └── UseWebsocket.ts
+    │   │       └── room/
+    │   │           ├── page.tsx
+    │   │           └── [roomId]/
+    │   │               ├── https.ts
+    │   │               └── page.tsx
+    │   └── ws-server/
+    │       ├── package.json
+    │       ├── tsconfig.json
+    │       ├── tsconfig.tsbuildinfo
+    │       └── src/
+    │           └── index.ts
+    └── packages/
+        ├── backend-common/
+        │   ├── package.json
+        │   ├── tsconfig.json
+        │   └── src/
+        │       └── index.ts
+        ├── common/
+        │   ├── package.json
+        │   ├── tsconfig.json
+        │   ├── tsconfig.tsbuildinfo
+        │   └── src/
+        │       ├── game.ts
+        │       ├── shapeTypes.ts
+        │       ├── utils.ts
+        │       └── zodTypes.ts
+        ├── db/
+        │   ├── package.json
+        │   ├── tsconfig.json
+        │   ├── prisma/
+        │   │   ├── schema.prisma
+        │   │   └── migrations/
+        │   │       ├── migration_lock.toml
+        │   │       ├── 20250821091932_init/
+        │   │       │   └── migration.sql
+        │   │       ├── 20250821120224_rename_email/
+        │   │       │   └── migration.sql
+        │   │       └── 20250823171711_minor_changes/
+        │   │           └── migration.sql
+        │   └── src/
+        │       └── index.ts
+        ├── eslint-config/
+        │   ├── README.md
+        │   ├── base.js
+        │   ├── next.js
+        │   ├── package.json
+        │   └── react-internal.js
+        ├── tailwind-config/
+        │   ├── package.json
+        │   ├── postcss.config.js
+        │   └── shared-styles.css
+        ├── typescript-config/
+        │   ├── base.json
+        │   ├── nextjs.json
+        │   ├── package.json
+        │   └── react-library.json
+        └── ui/
+            ├── eslint.config.mjs
+            ├── package.json
+            ├── postcss.config.js
+            ├── tsconfig.json
+            ├── turbo.json
+            └── src/
+                ├── CredentialButton.tsx
+                ├── CredentialText.tsx
+                ├── LoadingSpinner.tsx
+                ├── Navbar.tsx
+                ├── styles.css
+                └── ToolButton.tsx
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+---
 
-### Build
+## Features
 
-To build all apps and packages, run the following command:
+- 🔒 Authorization & secure JWT authentication  
+- 🎨 Real-time multi-room drawing canvas  
+- 💬 Room-based persistent chat  
+- 🏗️ Type-safe backend with Prisma ORM and PostgreSQL  
+- ⚡ Fast local and CI builds with Turborepo caching  
+- 🧩 Extensible project structure for teams
 
-```
-cd my-turborepo
+---
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+## Getting Started
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
+### Installation
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+git clone https://github.com/amanlad97/lets-draw-together.git
+cd lets-draw-together
+pnpm install
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
 
-### Develop
+### Local Development
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
 pnpm exec turbo dev
-```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
+Or run a specific app:
 pnpm exec turbo dev --filter=web
-```
 
-### Remote Caching
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+### Build for Production
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+pnpm exec turbo build
 
-```
-cd my-turborepo
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
+---
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## Database Setup
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+1. Create a `.env` file and fill out your `DATABASE_URL` (PostgreSQL).
+2. Run Prisma migrations:
+pnpm prisma generate
+pnpm prisma migrate deploy
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
 
-## Useful Links
+---
 
-Learn more about the power of Turborepo:
+## Deployment
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+- Set **Root Directory** to `apps/web` on Vercel (for the frontend)
+- **Build command:** `pnpm run build`
+- **Output directory:** `.next`
+
+---
+
+## Contributing
+
+Feel free to fork, branch, and open a pull request for new features or fixes!
+
+---
+
+## License
+
+MIT License
