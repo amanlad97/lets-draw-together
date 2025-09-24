@@ -32,6 +32,7 @@ export default function Signin() {
         type: "SET_USER",
         payload: { token: res.data.token, name: res.data.name },
       });
+      localStorage.setItem("token", res.data.token);
       router.push("/room");
     } catch (error) {
       alert(`Oops something went wrong: ${error}`);

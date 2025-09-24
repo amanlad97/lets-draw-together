@@ -20,7 +20,7 @@ const Dashboard = (props: PageProps<"/room/[roomId]">) => {
   useEffect(() => {
     const canvas = drawingRef.current;
     const ws = state.rooms?.[roomId];
-    if (!ws) {
+    if (!ws || !localStorage.getItem("token")) {
       router.push("/room");
       return;
     }
