@@ -6,7 +6,13 @@ export const getExistingShapes = async (
   roomId: number
 ): Promise<Shape[] | null> => {
   try {
-    const token = localStorage.getItem("token");
+    const { token } = localStorage
+      ? JSON.parse(localStorage.getItem("user") || "")
+      : null;
+    console.log(token);
+    if (!token) {
+      return null;
+    }
 
     const res = await axios.get(`${BACKEND_URL}/v1/room/chats`, {
       params: { roomId },

@@ -7,8 +7,6 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { BACKEND_URL } from "@repo/common/utils";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
-import { UseUser } from "../../hooks/UseUser";
 
 type Inputs = {
   username: string;
@@ -21,18 +19,18 @@ export default function Signin() {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const { dispatch } = UseUser();
   const router = useRouter();
 
   const onSubmitHandle = async (data: Inputs) => {
     try {
       const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, data);
-      localStorage.setItem("token", res.data.token);
-      dispatch({
-        type: "SET_USER",
-        payload: { token: res.data.token, name: res.data.name },
-      });
-      localStorage.setItem("token", res.data.token);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          token: res.data.token,
+          name: res.data.name,
+        })
+      );
       router.push("/room");
     } catch (error) {
       alert(`Oops something went wrong: ${error}`);

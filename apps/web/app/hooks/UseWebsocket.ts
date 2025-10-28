@@ -1,23 +1,21 @@
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { WEBSOCKET_URL } from "@repo/common/utils";
 import { UseUser } from "./UseUser";
 
-export default function useConnectWebSocket(roomId: number | null) {
-  const { state, dispatch } = UseUser();
-  const wsRef = useRef<WebSocket | null>(null);
-
+export default function useConnectWebSocket(roomId: number | undefined) {
+  const wsRef = useRef<WebSocket | undefined>(undefined);
+  const  user = UseUser();
   useEffect(() => {
-    if (!roomId || !state.user?.token) {
-      throw new Error("missing token or roomId");
+    if (!roomId || !user?.token) {
+      return;
     }
 
     try {
-      const ws = new WebSocket(`${WEBSOCKET_URL}?token=${state.user.token}`);
+      const ws = new WebSocket(`${WEBSOCKET_URL}?token=${user.token}`);
       wsRef.current = ws;
       ws.onopen = () => {
         console.log("WebSocket connected");
         ws.send(JSON.stringify({ type: "join", roomId, message: "" }));
-        dispatch({ type: "SET_ROOMS", payload: { [roomId]: ws } });
       };
 
       ws.onclose = () => console.log("WebSocket closed");
@@ -26,7 +24,7 @@ export default function useConnectWebSocket(roomId: number | null) {
       console.error(error);
       throw Error("something went wrong with websocket connection");
     }
-  }, [roomId, state?.user?.token]);
+  }, [roomId, user]);
 
   return wsRef;
 }

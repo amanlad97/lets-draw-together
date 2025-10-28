@@ -1,53 +1,31 @@
 "use client";
 
-import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  useContext,
-  useReducer,
-} from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 
-export interface stateType {
-  user:
-    | undefined
-    | {
-        token: string;
-        name: string;
-      };
-  rooms: undefined | Record<string, WebSocket>;
-}
-
-type Action =
-  | { type: "SET_USER"; payload: { token: string; name: string } }
-  | { type: "SET_ROOMS"; payload: Record<string, WebSocket> }
-  | { type: "CLEAR_USER" };
-
-const reduceFunction = (prev: stateType, action: Action): stateType => {
-  switch (action.type) {
-    case "SET_USER":
-      return { ...prev, user: action.payload };
-    case "SET_ROOMS":
-      return { ...prev, rooms: action.payload };
-    case "CLEAR_USER":
-      return { user: undefined, rooms: undefined };
-    default:
-      return prev;
-  }
-};
-
-export const User = createContext<
+export type stateType =
   | {
-      dispatch: Dispatch<Action>;
-      state: stateType;
+      token: string;
+      name: string;
     }
-  | undefined
->(undefined);
+  | undefined;
+
+export const User = createContext<stateType>(undefined);
 
 export const UserContext = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(reduceFunction, {
-    user: undefined,
-    rooms: undefined,
-  });
-  return <User value={{ state, dispatch }}>{children}</User>;
+  const [user, setUser] = useState<stateType>(undefined);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("user");
+      if (stored) {
+        console.log(stored);
+        const parsed = JSON.parse(stored);
+        if (parsed && parsed.token) setUser(parsed);
+      }
+    } catch (err) {
+      console.error("Error parsing user data:", err);
+    }
+  }, []);
+
+  return <User value={user}>{children}</User>;
 };

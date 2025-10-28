@@ -23,6 +23,7 @@ A full-featured collaborative drawing web app, built with a modern Turborepo mon
 ---
 
 ## Repository Structure
+
 <pre> <code>
 Directory structure:
 /apps
