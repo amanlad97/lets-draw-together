@@ -1,62 +1,61 @@
-"use client";
-import { use, useEffect, useRef, useState } from "react";
+import DashboardDrawingBoard from "./DashboardDrawingBoard";
+import { BACKEND_URL } from "@repo/common/utils";
+import { Shape } from "@repo/common/shapeTypes";
+import axios from "axios";
+import { cookies } from "next/headers";
+import { Suspense } from "react";
 import { LoadingSpinner } from "@repo/ui/loadingSpinner";
-import { useRouter } from "next/navigation";
-import ToolButtons from "@repo/ui/ToolButton";
-import { getExistingShapes } from "./https";
-import { Game } from "@repo/common/game";
-import { UseResize } from "../../hooks/useResize";
-import useConnectWebSocket from "../../hooks/UseWebsocket";
-import { UseUser } from "../../hooks/UseUser";
 
-const Dashboard = (props: PageProps<"/room/[roomId]">) => {
-  const drawingRef = useRef<HTMLCanvasElement>(null);
-  const gameRef = useRef<Game | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { roomId } = use(props.params);
-  const size = UseResize();
-  const router = useRouter();
-  const user = UseUser();
-  const ws = useConnectWebSocket(roomId ? parseInt(roomId) : undefined);
-  useEffect(() => {
-    const canvas = drawingRef.current;
-    if (!user) {
-      router.push("/signin");
-      return;
-    }
-    if (!ws) {
-      router.push("/room");
-      return;
-    }
-    if (canvas && ws.current) {
-      canvas.width = size.width;
-      canvas.height = size.height;
-      canvas.style.background = "black";
-
-      const game = new Game(
-        canvas,
-        parseInt(roomId),
-        ws.current,
-        getExistingShapes
-      );
-
-      gameRef.current = game;
-      game.selectShape("rectangle");
-      setLoading(false);
-
-      return () => {
-        game.destroy();
-      };
-    }
-  }, [roomId, router, size, ws, user]);
-
+const Dashboard = async (props: PageProps<"/room/[roomId]">) => {
+  const { roomId } = await props.params;
+  const parsedRoomId = roomId ? parseInt(roomId) : 0;
+  const existingShapes = (await getExistingShapes(parsedRoomId)) || [];
   return (
-    <div className="flex flex-col h-full w-full bg-black overflow-hidden">
-      {loading && <LoadingSpinner />}
-      <ToolButtons gameRef={gameRef} />
-      <canvas ref={drawingRef} className="flex-1"></canvas>
-    </div>
+    <Suspense fallback={<LoadingSpinner />}>
+      <DashboardDrawingBoard
+        roomId={parsedRoomId}
+        existingShapes={existingShapes}
+      />
+    </Suspense>
   );
 };
+const getExistingShapes = async (roomId: number): Promise<Shape[] | null> => {
+  try {
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore
+      .getAll()
+      .map(({ name, value }) => `${name}=${value}`)
+      .join("; ");
 
+    const res = await axios.get(`${BACKEND_URL}/v1/room/chats`, {
+      params: { roomId },
+      headers: {
+        Cookie: cookieHeader,
+      },
+    });
+    console.log(res);
+    if (res.status !== 200) {
+      console.warn("Non-200 response:", res.status);
+      return null;
+    }
+
+    if (!Array.isArray(res.data.response)) {
+      console.warn("Unexpected response format:", res.data);
+      return null;
+    }
+
+    const shapes: Shape[] = res.data.response.map((x: { message: string }) => {
+      try {
+        return JSON.parse(x.message);
+      } catch {
+        console.warn("Failed to parse shape:", x.message);
+        return null;
+      }
+    });
+    return shapes;
+  } catch (error) {
+    console.error("Error fetching shapes:", error);
+    return null;
+  }
+};
 export default Dashboard;

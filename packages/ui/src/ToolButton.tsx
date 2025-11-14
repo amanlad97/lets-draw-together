@@ -39,8 +39,6 @@ const ToolButtons = ({ gameRef }: ToolButtonsProps) => {
     ),
   };
 
-  if (!gameRef.current) return null;
-
   return (
     <div className="fixed top-19 right-4 z-50">
       <div className="flex flex-col gap-2 p-2 bg-gray-800/70 backdrop-blur-md rounded-xl shadow-lg">
