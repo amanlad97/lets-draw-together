@@ -19,11 +19,14 @@ export default function Signin() {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
+
   const router = useRouter();
 
   const onSubmitHandle = async (data: Inputs) => {
     try {
-      const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, data);
+      const res = await axios.post(`${BACKEND_URL}/v1/security/signin`, data, {
+        withCredentials: true,
+      });
       localStorage.setItem(
         "user",
         JSON.stringify({
@@ -36,7 +39,6 @@ export default function Signin() {
       alert(`Oops something went wrong: ${error}`);
     }
   };
-
   return (
     <div className="flex flex-col items-center text-center w-full max-w-sm mx-auto">
       <h3 className="text-3xl font-semibold text-white mb-6">Login</h3>
