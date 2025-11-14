@@ -1,4 +1,3 @@
-// import { getExistingShapes } from "../../../apps/web/app/drawingBoard/https";
 import { Shape, ShapeType } from "./shapeTypes";
 
 export class Game {
@@ -17,7 +16,7 @@ export class Game {
     canvas: HTMLCanvasElement,
     roomId: number,
     ws: WebSocket,
-    getExistingShapes: (arg0: number) => Promise<Shape[] | null>
+    getExistingShapes: Shape[] | null
   ) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d")!;
@@ -35,11 +34,9 @@ export class Game {
     this.canvas.removeEventListener("pointermove", this.pointermove);
   }
 
-  private async init(
-    getExistingShapes: (arg0: number) => Promise<Shape[] | null>
-  ) {
+  private async init(getExistingShapes: Shape[] | null) {
     try {
-      this.existingShapes = (await getExistingShapes(this.roomId)) || [];
+      this.existingShapes = getExistingShapes || [];
       this.clear();
     } catch (error) {
       console.error("Failed to load existing shapes:", error);
