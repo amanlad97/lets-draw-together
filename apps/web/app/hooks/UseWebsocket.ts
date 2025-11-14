@@ -1,18 +1,25 @@
-import { useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import { WEBSOCKET_URL } from "@repo/common/utils";
-import { UseUser } from "./UseUser";
 
-export default function useConnectWebSocket(roomId: number | undefined) {
-  const wsRef = useRef<WebSocket | undefined>(undefined);
-  const  user = UseUser();
+export default function UseWebSocket(
+  roomId: number
+): RefObject<WebSocket | undefined> {
+  const wsRef = useRef<WebSocket>(undefined);
+
   useEffect(() => {
-    if (!roomId || !user?.token) {
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("token="))
+      ?.split("=")[1];
+
+    if (!roomId) {
+      console.log("y are we here?");
       return;
     }
-
     try {
-      const ws = new WebSocket(`${WEBSOCKET_URL}?token=${user.token}`);
+      const ws = new WebSocket(`${WEBSOCKET_URL}?token=${token}`);
       wsRef.current = ws;
+      console.log("we got till try block with ", token, ws);
       ws.onopen = () => {
         console.log("WebSocket connected");
         ws.send(JSON.stringify({ type: "join", roomId, message: "" }));
@@ -24,7 +31,7 @@ export default function useConnectWebSocket(roomId: number | undefined) {
       console.error(error);
       throw Error("something went wrong with websocket connection");
     }
-  }, [roomId, user]);
+  }, [roomId]);
 
   return wsRef;
 }

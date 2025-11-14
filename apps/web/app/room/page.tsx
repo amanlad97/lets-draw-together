@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { BACKEND_URL } from "@repo/common/utils";
-import { UseUser } from "../hooks/UseUser";
 
 type LoadingState = "create" | "join" | null;
 
@@ -12,17 +11,15 @@ type MakeRoomRes = { room: { id: string; slug: string } };
 type JoinRoomRes = { id: string };
 
 export default function Room() {
+  const buttonClass =
+    "hover:bg-amber-300 hover:text-gray-900 hover:shadow-md p-3 bg-gray-700 rounded-xl text-white font-bold disabled:opacity-50";
+
   const router = useRouter();
+
   const [roomName, setRoomName] = useState("");
   const [loading, setLoading] = useState<LoadingState>(null);
   const [message, setMessage] = useState<string>("");
 
-  const { token } = UseUser() || {};
-
-  if (token === undefined) {
-    router.push("/signin");
-    return;
-  }
   const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, "-");
 
   const handleRequest = async (type: "create" | "join") => {
@@ -37,7 +34,9 @@ export default function Room() {
         const res = await axios.post<MakeRoomRes>(
           `${BACKEND_URL}/v1/room/makeRoom`,
           { slug },
-          { headers: { token }, validateStatus: (s) => s < 500 }
+          {
+            withCredentials: true,
+          }
         );
         if (res.status === 200 || res.status === 201) {
           setMessage(`Room created: ${res.data.room.slug}`);
@@ -52,7 +51,7 @@ export default function Room() {
           `${BACKEND_URL}/v1/room/joinRoom`,
           {
             params: { room: slug },
-            headers: { token },
+            withCredentials: true,
           }
         );
         if (res.status === 200) {
@@ -70,9 +69,6 @@ export default function Room() {
       setLoading(null);
     }
   };
-
-  const buttonClass =
-    "hover:bg-amber-300 hover:text-gray-900 hover:shadow-md p-3 bg-gray-700 rounded-xl text-white font-bold disabled:opacity-50";
 
   return (
     <div className="bg-black w-screen h-screen flex items-center justify-center">
