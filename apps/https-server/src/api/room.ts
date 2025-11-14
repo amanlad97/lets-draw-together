@@ -40,7 +40,6 @@ room.post("/makeRoom", async (req, res) => {
 
 room.get("/joinRoom", async (req, res) => {
   const roomSlug = req.query.room;
-  console.log(req.params);
   if (typeof roomSlug !== "string") return;
   const client = await prismaClient.room.findFirst({
     where: {

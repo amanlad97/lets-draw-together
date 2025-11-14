@@ -33,7 +33,6 @@ const getExistingShapes = async (roomId: number): Promise<Shape[] | null> => {
         Cookie: cookieHeader,
       },
     });
-    console.log(res);
     if (res.status !== 200) {
       console.warn("Non-200 response:", res.status);
       return null;

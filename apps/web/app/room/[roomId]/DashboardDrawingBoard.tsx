@@ -22,7 +22,6 @@ const DashboardDrawingBoard = (props: {
       canvas.width = size.width;
       canvas.height = size.height;
       canvas.style.background = "black";
-      console.log(ws, "ws is here");
       const game = new Game(canvas, roomId, ws.current, existingShapes);
 
       gameRef.current = game;
@@ -33,7 +32,6 @@ const DashboardDrawingBoard = (props: {
       };
     }
   }, [roomId, size, ws, existingShapes]);
-  console.log(gameRef);
   return (
     <div className="flex flex-col h-full w-full bg-black overflow-hidden">
       <ToolButtons gameRef={gameRef} />

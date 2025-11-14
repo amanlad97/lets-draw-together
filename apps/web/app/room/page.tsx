@@ -40,7 +40,6 @@ export default function Room() {
         );
         if (res.status === 200 || res.status === 201) {
           setMessage(`Room created: ${res.data.room.slug}`);
-          router.push(`/room/${res.data.room.id}`);
         } else if (res.status === 409) {
           setMessage("Room already exists");
         } else {

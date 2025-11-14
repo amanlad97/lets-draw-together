@@ -13,7 +13,6 @@ export default function UseWebSocket(
       ?.split("=")[1];
 
     if (!roomId) {
-      console.log("y are we here?");
       return;
     }
     try {
