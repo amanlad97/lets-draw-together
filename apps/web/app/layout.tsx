@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "./components/Navbar";
-import { UserContext } from "./provider/provider";
 
 export const metadata: Metadata = {
   title: "let's draw together",
@@ -16,10 +15,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black overflow-hidden">
-        <UserContext>
-          <Navbar />
-          {children}
-        </UserContext>
+        <Navbar />
+        {children}
       </body>
     </html>
   );
