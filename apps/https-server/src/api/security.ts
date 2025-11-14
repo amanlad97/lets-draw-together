@@ -33,7 +33,7 @@ security.post("/signin", async (req, res) => {
 
   const token = jwt.sign({ id: user.id }, jwtKey, { expiresIn: "1d" });
 
-  res.json({ message: "signin successfull", token, name: user.name });
+  res.cookie("token", token).json("token sent!!");
 });
 
 security.post("/signup", async (req, res) => {
