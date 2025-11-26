@@ -6,7 +6,7 @@ export const Navbar = () => {
   const path = usePathname();
   const [loggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
-    setLoggedIn(!(path === "/signin"));
+    setLoggedIn(!(path === "/signin") && !(path === "/signup"));
   }, [path]);
 
   return (
@@ -17,9 +17,7 @@ export const Navbar = () => {
         backdrop-blur-md bg-gray-800/70
         text-white shadow-md"
     >
-      <div className="font-semibold px-4 py-2 bg-gray-900/70">
-        Let’s Draw Together
-      </div>
+      <div className="font-semibold px-4 py-2">Let’s Draw Together</div>
       {loggedIn && (
         <button
           className="font-semibold hover:text-amber-300 transition"

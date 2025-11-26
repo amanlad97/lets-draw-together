@@ -38,6 +38,7 @@ security.post("/signin", async (req, res) => {
 
 security.post("/signup", async (req, res) => {
   const data = CreateUserSchema.safeParse(req.body);
+  console.log(data);
   if (!data.success) {
     return res.status(403).json({ ok: false, message: "Invalid input" });
   }
