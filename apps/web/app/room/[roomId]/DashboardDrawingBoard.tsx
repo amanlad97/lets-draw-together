@@ -2,9 +2,9 @@
 import { useEffect, useRef } from "react";
 import ToolButtons from "@repo/ui/ToolButton";
 import { Game } from "@repo/common/game";
-import { UseResize } from "../../hooks/useResize";
+import { UseResize } from "../../../hooks/useResize";
 import { Shape } from "@repo/common/shapeTypes";
-import UseWebSocket from "../../hooks/UseWebsocket";
+import UseWebSocket from "../../../hooks/UseWebsocket";
 
 const DashboardDrawingBoard = (props: {
   roomId: number;

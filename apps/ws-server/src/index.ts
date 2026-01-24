@@ -30,6 +30,13 @@ wss.on("connection", function connection(ws, request) {
     }
     users.push({ userId: decoded.id, ws: ws, rooms: [] });
 
+    ws.on('close', () => {
+      const index = users.findIndex(u => u.ws === ws);
+      if (index !== -1) {
+        users.splice(index, 1);
+      }
+    });
+
     ws.on("message", async function message(message: String) {
       const payload: payload = JSON.parse(message.toString());
       switch (payload.type) {
@@ -54,15 +61,17 @@ wss.on("connection", function connection(ws, request) {
           break;
 
         case "join":
-          users.find((user) => {
-            user.rooms.push(payload.roomId);
-          });
+          const joinUser = users.find((user) => user.userId === decoded.id);
+          if (joinUser) {
+            joinUser.rooms.push(payload.roomId);
+          }
           break;
 
         case "leave":
-          users.find((user) => {
-            user.rooms = user.rooms.filter((x) => x !== payload.roomId);
-          });
+          const leaveUser = users.find((user) => user.userId === decoded.id);
+          if (leaveUser) {
+            leaveUser.rooms = leaveUser.rooms.filter((x) => x !== payload.roomId);
+          }
           break;
 
         default:
